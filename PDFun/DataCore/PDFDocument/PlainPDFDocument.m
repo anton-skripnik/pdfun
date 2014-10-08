@@ -18,6 +18,11 @@
 
 @implementation PlainPDFDocument
 
++ (NSString *)extension
+{
+    return @"pdf";
+}
+
 + (instancetype)documentWithPath:(NSString *)path
 {
     if ([path length] == 0)
@@ -42,18 +47,31 @@
     return [[self.path lastPathComponent] stringByDeletingPathExtension];
 }
 
-- (BOOL)open
+- (void)openWithCompletion:(PDFDocumentOpenCompletionBlock)completion
 {
     if (![[NSFileManager defaultManager] fileExistsAtPath:self.path])
     {
         DLog(@"Failed to find file at %@", self.path);
-        return NO;
+        if (completion)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^
+            {
+                completion(NO);
+            });
+        }
+        return;
     }
     
     NSURL* URL = [NSURL fileURLWithPath:self.path];
     self.CGPDFDocument = CGPDFDocumentCreateWithURL((CFURLRef)URL);
     
-    return self.CGPDFDocument != NULL;
+    if (completion)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^
+        {
+            completion(self.CGPDFDocument != NULL);
+        });
+    }
 }
 
 - (void)close

@@ -8,15 +8,23 @@
 
 #import "EncryptedPDFDocument.h"
 #import "Globals.h"
+#import "Cryptor.h"
+#import "TemporaryStorageManager.h"
 
 @interface EncryptedPDFDocument()
 
 @property (nonatomic, copy)         NSString*           path;
+@property (nonatomic, copy)         NSString*           temporaryPlainPDFPath;
 @property (nonatomic, assign)       CGPDFDocumentRef    CGPDFDocument;
 
 @end
 
 @implementation EncryptedPDFDocument
+
++ (NSString *)extension
+{
+    return @"epd";
+}
 
 + (instancetype)documentWithPath:(NSString *)path
 {
@@ -42,20 +50,95 @@
     return [[self.path lastPathComponent] stringByDeletingPathExtension];
 }
 
-- (BOOL)open
+- (void)openWithCompletion:(PDFDocumentOpenCompletionBlock)completion
 {
-    // 1. Copy the encrypted file into a temporary directory.
-    // 2. Decrypt the file into a temporary PDF file and remove the encrypted copy from the temporary directory.
-    // 3. Create the CGPDFDocumentRef with the temporary PDF.
+    NSASSERT_NOT_NIL(self.password);
+
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:self.path])
+    {
+        DLog(@"Failed to find file at %@", self.path);
+        if (completion)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^
+            {
+                completion(NO);
+            });
+        }
+        return;
+    }
     
-    // TODO: Code the above.
-    return NO;
+    NSString* temporaryPlainPDFPath = [[TemporaryStorageManager sharedManager] pathForNamePrefix:self.name ofType:@"pdf"];
+    NSString* temporaryEncryptedCopyPath = [[temporaryPlainPDFPath stringByDeletingPathExtension] stringByAppendingPathExtension:self.class.extension];
+    NSError* copyingError = nil;
+    if (![fileManager copyItemAtPath:self.path toPath:temporaryEncryptedCopyPath error:&copyingError])
+    {
+        DLog(@"Error copying an encrypted file %@ into the temporary location %@", self.path, temporaryEncryptedCopyPath);
+        if (completion)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^
+            {
+                completion(NO);
+            });
+        }
+        return;
+    }
+    
+    Cryptor* __block cryptor = [[Cryptor alloc] init];
+    [cryptor decryptSourceBinaryAt:temporaryEncryptedCopyPath
+                         intoPDFAt:temporaryPlainPDFPath
+                      withPassword:self.password
+                        completion:^(NSError *error)
+    {
+        [fileManager removeItemAtPath:temporaryEncryptedCopyPath error:nil];
+        
+        if (error)
+        {
+            [fileManager removeItemAtPath:temporaryPlainPDFPath error:nil];
+            
+            if (completion)
+            {
+                completion(NO);
+            }
+        }
+        else
+        {
+            self.temporaryPlainPDFPath = temporaryPlainPDFPath;
+            NSURL* temporaryPlainPDFURL = [NSURL fileURLWithPath:temporaryPlainPDFPath];
+            self.CGPDFDocument = CGPDFDocumentCreateWithURL((CFURLRef)temporaryPlainPDFURL);
+            if (!self.CGPDFDocument)
+            {
+                DLog(@"Failed to create a CGPDFDocumentRef!");
+                self.temporaryPlainPDFPath = nil;
+                [fileManager removeItemAtPath:temporaryPlainPDFPath error:nil];
+                if (completion)
+                {
+                    completion(NO);
+                }
+            }
+            else
+            {
+                if (completion)
+                {
+                    completion(YES);
+                }
+            }
+        }
+        
+        cryptor = nil;
+    }];
 }
 
 - (void)close
 {
-    // 1. Release the CGPDFDocumentRef and NULL the property.
-    // 2. Remove the temporary PDF file.
+    if (self.CGPDFDocument)
+    {
+        CGPDFDocumentRelease(self.CGPDFDocument), self.CGPDFDocument = NULL;
+    }
+    if (self.temporaryPlainPDFPath)
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:self.temporaryPlainPDFPath error:nil], self.temporaryPlainPDFPath = nil;
+    }
 }
 
 @end

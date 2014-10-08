@@ -8,13 +8,18 @@
 
 #import "Librarian.h"
 #import "Globals.h"
+#import "TemporaryStorageManager.h"
+#import "Cryptor.h"
+#import "NSFileManager+Utils.h"
 
 #import "PlainPDFDocument.h"
 #import "EncryptedPDFDocument.h"
 
-@interface Librarian ()
 
-@property (nonatomic, strong)       dispatch_queue_t        queue;
+NSString* const LibrarianErrorDomain = @"LibrarianErrorDomain";
+
+
+@interface Librarian ()
 
 @property (atomic, strong)          NSArray*                documents;
 
@@ -24,6 +29,7 @@
 
 - (NSArray *)_consumableDocumentPaths;
 - (NSDictionary *)_consumableExtensionsToDocumentClassesMap;
+- (NSString *)_libraryPathForDocumentWithName:(NSString *)documentName withType:(NSString *)extension;
 
 @end
 
@@ -41,19 +47,9 @@
     return staticInstance;
 }
 
-- (instancetype)init
-{
-    if ((self = [super init]))
-    {
-        self.queue = dispatch_queue_create(APP_SPECIFIC_ID_WITH_SUFFIX("librarianqueue"), DISPATCH_QUEUE_PRIORITY_DEFAULT);
-    }
-    
-    return self;
-}
-
 - (void)refreshDocumentsListWithCompletion:(LibrarianCompletionBlock)completion
 {
-    dispatch_async(self.queue, ^
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
     {
         NSFileManager*  fileManager = [NSFileManager defaultManager];
         
@@ -77,30 +73,32 @@
                 
                 [pathContents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
                 {
-                    NSASSERT_OF_CLASS(obj, NSString);
-                    NSString* potentialDocumentFileName = obj;
-                    
-                    if ([potentialDocumentFileName hasPrefix:@"."])
+                    @autoreleasepool
                     {
-                        // Skip hidden files along with . and ..
-                        return;
-                    }
-                    
-                    NSString* extension = [[potentialDocumentFileName pathExtension] lowercaseString];
-                    if (lookupExtensionToClassesMap[extension] != nil)
-                    {
-                        // A file with supported extension found.
-                        NSString* fullDocumentPath = [path stringByAppendingPathComponent:potentialDocumentFileName];
+                        NSASSERT_OF_CLASS(obj, NSString);
+                        NSString* potentialDocumentFileName = obj;
                         
-                        Class<PDFDocumentProtocol> pdfDocumentClass = lookupExtensionToClassesMap[extension];
-                        PDFDocument* document = [pdfDocumentClass documentWithPath:fullDocumentPath];
-                        if (document)
+                        if ([potentialDocumentFileName hasPrefix:@"."])
                         {
-                            [documents addObject:document];
+                            // Skip hidden files along with . and ..
+                            return;
+                        }
+                        
+                        NSString* extension = [[potentialDocumentFileName pathExtension] lowercaseString];
+                        if (lookupExtensionToClassesMap[extension] != nil)
+                        {
+                            // A file with supported extension found.
+                            NSString* fullDocumentPath = [path stringByAppendingPathComponent:potentialDocumentFileName];
+                            
+                            Class<PDFDocumentProtocol> pdfDocumentClass = lookupExtensionToClassesMap[extension];
+                            PDFDocument* document = [pdfDocumentClass documentWithPath:fullDocumentPath];
+                            if (document)
+                            {
+                                [documents addObject:document];
+                            }
                         }
                     }
                 }];
-            
             }
         }];
         
@@ -114,6 +112,94 @@
             });
         }
     });
+}
+
+- (void)addToLibraryEncryptedCopyOfDocument:(NSObject<PDFDocumentProtocol> *)document
+                                   withName:(NSString *)newDocumentName
+                                   password:(NSString *)password
+                                 completion:(LibrarianCompletionBlock)completion
+{
+    NSASSERT_NOT_NIL(document);
+    NSASSERT_NOT_NIL(newDocumentName);
+    NSASSERT_NOT_NIL(password);
+    
+    if (document.CGPDFDocument == NULL)
+    {
+        DLog(@"Cannot copy a document that hasn't been opened yet!");
+        NSError* unopenDocumentError = [NSError errorWithDomain:LibrarianErrorDomain code:LibrarianErrorCopyingUnopenDocument userInfo:@{ NSLocalizedDescriptionKey: @"Unable to copy a document not open before!" }];
+        if (completion)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^
+            {
+                completion(unopenDocumentError);
+            });
+        }
+        
+        return;
+    }
+    
+    
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    
+#warning TEST CODE. REMOVE IT!
+    // Consider moving the rendering elsewhere!
+    NSString* renderedTemporaryPDFPath = [[TemporaryStorageManager sharedManager] pathForNamePrefix:newDocumentName ofType:[PlainPDFDocument extension]];
+    NSURL* renderedTemporaryPDFURL = [NSURL fileURLWithPath:renderedTemporaryPDFPath];
+    CGRect mediaBoxRect = CGPDFPageGetBoxRect(CGPDFDocumentGetPage(document.CGPDFDocument, 1), kCGPDFMediaBox);
+    CGContextRef pdfContext = CGPDFContextCreateWithURL((CFURLRef)renderedTemporaryPDFURL, &mediaBoxRect, NULL);
+    NSData* pdfPageSizeData = [NSData dataWithBytes:&mediaBoxRect length:sizeof(mediaBoxRect)];
+    NSDictionary* pdfPageDictionary = @{ (id)kCGPDFContextMediaBox: pdfPageSizeData };
+    for (int page = 1; page < CGPDFDocumentGetNumberOfPages(document.CGPDFDocument); page++)
+    {
+        CGPDFContextBeginPage(pdfContext, (CFDictionaryRef)pdfPageDictionary);
+        CGContextDrawPDFPage(pdfContext, CGPDFDocumentGetPage(document.CGPDFDocument, page));
+        CGPDFContextEndPage(pdfContext);
+    }
+    CGContextRelease(pdfContext);
+#warning END OF TEST CODE. REMOVE UP TO THIS POINT.
+    
+    NSString* temporaryBinaryPath = [[renderedTemporaryPDFPath stringByDeletingPathExtension] stringByAppendingPathExtension:[EncryptedPDFDocument extension]];
+    
+    Cryptor* __block cryptor = [[Cryptor alloc] init];
+    [cryptor encryptSourcePDFAt:renderedTemporaryPDFPath
+                   intoBinaryAt:temporaryBinaryPath
+                   withPassword:password
+                     completion:^(NSError *error)
+    {
+        [fileManager removeItemAtPath:renderedTemporaryPDFPath error:nil];
+        
+        if (error)
+        {
+            [fileManager removeItemAtPath:temporaryBinaryPath error:nil];
+            if (completion)
+            {
+                completion(error);
+            }
+        }
+        else
+        {
+            NSString* destinationBinaryPath = [self _libraryPathForDocumentWithName:newDocumentName withType:[EncryptedPDFDocument extension]];
+            NSError* __autoreleasing binaryMovingError = nil;
+            if ([fileManager moveItemAtPath:temporaryBinaryPath possiblyReplacingItemAtPath:destinationBinaryPath error:&binaryMovingError])
+            {
+                if (completion)
+                {
+                    completion(nil);
+                }
+            }
+            else
+            {
+                DLog(@"Failed to move temporary binary %@ to %@. Error %@", temporaryBinaryPath, destinationBinaryPath, binaryMovingError);
+                if (completion)
+                {
+                    completion(binaryMovingError);
+                }
+                [fileManager removeItemAtPath:temporaryBinaryPath error:nil];
+            }
+        }
+        
+        cryptor = nil;
+    }];
 }
 
 @end
@@ -140,9 +226,17 @@
 {
     return
     @{
-        @"pdf" : [PlainPDFDocument class],
-        @"epd" : [EncryptedPDFDocument class],  /* A custom extension. */
+        [PlainPDFDocument extension] : [PlainPDFDocument class],
+        [EncryptedPDFDocument extension] : [EncryptedPDFDocument class],  
     };
+}
+
+- (NSString *)_libraryPathForDocumentWithName:(NSString *)documentName withType:(NSString *)extension
+{
+    NSURL* documentsDirectoryURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
+    NSString* documentsDirectoryPath = [documentsDirectoryURL path];
+    
+    return [[documentsDirectoryPath stringByAppendingPathComponent:documentName] stringByAppendingPathExtension:extension];
 }
 
 @end

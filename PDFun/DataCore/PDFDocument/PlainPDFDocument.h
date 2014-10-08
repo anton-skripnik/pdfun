@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "PDFDocument.h"
 
+//
+//  The class represents "plain" PDF documents.
+//
+
 @interface PlainPDFDocument : NSObject<PDFDocumentProtocol>
 
 @property (nonatomic, copy, readonly)   NSString*           path;

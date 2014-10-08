@@ -9,7 +9,10 @@
 #import "LibraryViewController.h"
 #import "Globals.h"
 #import "Librarian.h"
+
 #import "PDFDocument.h"
+#import "PlainPDFDocument.h"
+#import "EncryptedPDFDocument.h"
 
 #define TITLE                                               @"Library"
 #define LIBRARY_ITEM_CELL_IDENTIFIER                        CELL_ID_WITH_SUFFIX("library")
@@ -68,6 +71,44 @@
 #pragma mark - UITableViewDelegate methods -
 
 @implementation LibraryViewController (UITableViewDelegate)
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+#warning TEST CODE. REMOVE IT!
+    PDFDocument* document = [[[Librarian sharedInstance] documents] objectAtIndex:indexPath.row];
+    if ([document isKindOfClass:[EncryptedPDFDocument class]])
+    {
+        [(EncryptedPDFDocument *)document setPassword:@"Dummy_password"];
+    }
+    
+    DLog(@"Opening document...");
+    [document openWithCompletion:^(BOOL succeeded)
+    {
+        DLog(@"Done opening document. %s", succeeded ? "success" : "failed");
+        if (succeeded)
+        {
+            DLog(@"Copying an encrypted version of the document to the Library.");
+            [[Librarian sharedInstance] addToLibraryEncryptedCopyOfDocument:document
+                                                                   withName:[document.name stringByAppendingString:@".enc"]
+                                                                   password:@"Dummy_password"
+                                                                 completion:^(NSError *error)
+            {
+                DLog(@"Done encrypting and copying. %@", error ? error : @"success");
+                [document close];
+                DLog(@"Reloading library data.");
+                [[Librarian sharedInstance] refreshDocumentsListWithCompletion:^(NSError *error)
+                {
+                    DLog(@"Done reloading library. %@", error ? error : @"success");
+                    [tableView reloadData];
+                }];
+            }];
+        }
+    }];
+#warning END OF TEST CODE. REMOVE UP TO THIS POINT.
+
+}
 
 @end
 

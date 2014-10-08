@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6D08A53319E52B0F00EE4BB7 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A53219E52B0F00EE4BB7 /* LibraryViewController.m */; };
 		6D08A53B19E536FF00EE4BB7 /* Librarian.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A53A19E536FF00EE4BB7 /* Librarian.m */; };
 		6D08A53F19E5395500EE4BB7 /* PlainPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A53E19E5395500EE4BB7 /* PlainPDFDocument.m */; };
 		6D08A54219E5396F00EE4BB7 /* EncryptedPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A54119E5396F00EE4BB7 /* EncryptedPDFDocument.m */; };
 		6D08A54519E5460B00EE4BB7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D08A54419E5460B00EE4BB7 /* Images.xcassets */; };
 		6D08A54719E5463300EE4BB7 /* BundledPDFs in Resources */ = {isa = PBXBuildFile; fileRef = 6D08A54619E5463300EE4BB7 /* BundledPDFs */; };
+		6D08A54D19E5675300EE4BB7 /* Cryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A54C19E5675300EE4BB7 /* Cryptor.m */; };
+		6D08A55119E5A94100EE4BB7 /* TemporaryStorageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A55019E5A94100EE4BB7 /* TemporaryStorageManager.m */; };
+		6D08A55719E5B3EE00EE4BB7 /* NSFileManager+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A55619E5B3EE00EE4BB7 /* NSFileManager+Utils.m */; };
+		6D08A55B19E5BA2F00EE4BB7 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A55A19E5BA2F00EE4BB7 /* LibraryViewController.m */; };
 		6DD1558919E2F777003A740C /* PDFunTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1558819E2F777003A740C /* PDFunTests.m */; };
 		6DD1559719E301EB003A740C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1559419E301EB003A740C /* AppDelegate.m */; };
 		6DD1559819E301EB003A740C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DD1559519E301EB003A740C /* Info.plist */; };
@@ -30,8 +33,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6D08A53119E52B0F00EE4BB7 /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
-		6D08A53219E52B0F00EE4BB7 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		6D08A53519E5309A00EE4BB7 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		6D08A53919E536FF00EE4BB7 /* Librarian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Librarian.h; sourceTree = "<group>"; };
 		6D08A53A19E536FF00EE4BB7 /* Librarian.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Librarian.m; sourceTree = "<group>"; };
@@ -42,6 +43,14 @@
 		6D08A54119E5396F00EE4BB7 /* EncryptedPDFDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EncryptedPDFDocument.m; sourceTree = "<group>"; };
 		6D08A54419E5460B00EE4BB7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6D08A54619E5463300EE4BB7 /* BundledPDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BundledPDFs; sourceTree = "<group>"; };
+		6D08A54B19E5675300EE4BB7 /* Cryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cryptor.h; sourceTree = "<group>"; };
+		6D08A54C19E5675300EE4BB7 /* Cryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cryptor.m; sourceTree = "<group>"; };
+		6D08A54F19E5A94100EE4BB7 /* TemporaryStorageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemporaryStorageManager.h; sourceTree = "<group>"; };
+		6D08A55019E5A94100EE4BB7 /* TemporaryStorageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemporaryStorageManager.m; sourceTree = "<group>"; };
+		6D08A55519E5B3EE00EE4BB7 /* NSFileManager+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+Utils.h"; sourceTree = "<group>"; };
+		6D08A55619E5B3EE00EE4BB7 /* NSFileManager+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Utils.m"; sourceTree = "<group>"; };
+		6D08A55919E5BA2E00EE4BB7 /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
+		6D08A55A19E5BA2F00EE4BB7 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		6DD1556919E2F777003A740C /* PDFun.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFun.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DD1558219E2F777003A740C /* PDFunTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFunTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DD1558719E2F777003A740C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -82,8 +91,7 @@
 		6D08A52F19E52AE900EE4BB7 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				6D08A53119E52B0F00EE4BB7 /* LibraryViewController.h */,
-				6D08A53219E52B0F00EE4BB7 /* LibraryViewController.m */,
+				6D08A55819E5BA2E00EE4BB7 /* Library */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -106,8 +114,10 @@
 		6D08A53619E536E800EE4BB7 /* DataCore */ = {
 			isa = PBXGroup;
 			children = (
+				6D08A54A19E5674800EE4BB7 /* Cryptor */,
 				6D08A53719E536E800EE4BB7 /* Librarian */,
 				6D08A53819E536E800EE4BB7 /* PDFDocument */,
+				6D08A54E19E5A92F00EE4BB7 /* TemporaryStorageManager */,
 			);
 			path = DataCore;
 			sourceTree = "<group>";
@@ -142,6 +152,43 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		6D08A54A19E5674800EE4BB7 /* Cryptor */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A54B19E5675300EE4BB7 /* Cryptor.h */,
+				6D08A54C19E5675300EE4BB7 /* Cryptor.m */,
+			);
+			path = Cryptor;
+			sourceTree = "<group>";
+		};
+		6D08A54E19E5A92F00EE4BB7 /* TemporaryStorageManager */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A54F19E5A94100EE4BB7 /* TemporaryStorageManager.h */,
+				6D08A55019E5A94100EE4BB7 /* TemporaryStorageManager.m */,
+			);
+			name = TemporaryStorageManager;
+			path = PDFun/DataCore/TemporaryStorageManager;
+			sourceTree = SOURCE_ROOT;
+		};
+		6D08A55419E5B3E000EE4BB7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A55519E5B3EE00EE4BB7 /* NSFileManager+Utils.h */,
+				6D08A55619E5B3EE00EE4BB7 /* NSFileManager+Utils.m */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		6D08A55819E5BA2E00EE4BB7 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A55919E5BA2E00EE4BB7 /* LibraryViewController.h */,
+				6D08A55A19E5BA2F00EE4BB7 /* LibraryViewController.m */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
 		6DD1556019E2F777003A740C = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				6D08A53619E536E800EE4BB7 /* DataCore */,
+				6D08A55419E5B3E000EE4BB7 /* Extensions */,
 				6D08A52E19E52AE900EE4BB7 /* Interface */,
 				6D08A53419E5303700EE4BB7 /* Utility */,
 				6DD1559219E301EB003A740C /* Supporting Files */,
@@ -300,12 +348,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D08A53319E52B0F00EE4BB7 /* LibraryViewController.m in Sources */,
+				6D08A55719E5B3EE00EE4BB7 /* NSFileManager+Utils.m in Sources */,
 				6DD1559919E301EB003A740C /* main.m in Sources */,
 				6D08A54219E5396F00EE4BB7 /* EncryptedPDFDocument.m in Sources */,
+				6D08A55B19E5BA2F00EE4BB7 /* LibraryViewController.m in Sources */,
 				6D08A53F19E5395500EE4BB7 /* PlainPDFDocument.m in Sources */,
 				6D08A53B19E536FF00EE4BB7 /* Librarian.m in Sources */,
+				6D08A54D19E5675300EE4BB7 /* Cryptor.m in Sources */,
 				6DD1559719E301EB003A740C /* AppDelegate.m in Sources */,
+				6D08A55119E5A94100EE4BB7 /* TemporaryStorageManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
