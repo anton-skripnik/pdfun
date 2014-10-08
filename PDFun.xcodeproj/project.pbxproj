@@ -7,7 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6DD1557A19E2F777003A740C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DD1557919E2F777003A740C /* Images.xcassets */; };
+		6D08A53319E52B0F00EE4BB7 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A53219E52B0F00EE4BB7 /* LibraryViewController.m */; };
+		6D08A53B19E536FF00EE4BB7 /* Librarian.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A53A19E536FF00EE4BB7 /* Librarian.m */; };
+		6D08A53F19E5395500EE4BB7 /* PlainPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A53E19E5395500EE4BB7 /* PlainPDFDocument.m */; };
+		6D08A54219E5396F00EE4BB7 /* EncryptedPDFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A54119E5396F00EE4BB7 /* EncryptedPDFDocument.m */; };
+		6D08A54519E5460B00EE4BB7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D08A54419E5460B00EE4BB7 /* Images.xcassets */; };
+		6D08A54719E5463300EE4BB7 /* BundledPDFs in Resources */ = {isa = PBXBuildFile; fileRef = 6D08A54619E5463300EE4BB7 /* BundledPDFs */; };
 		6DD1558919E2F777003A740C /* PDFunTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1558819E2F777003A740C /* PDFunTests.m */; };
 		6DD1559719E301EB003A740C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1559419E301EB003A740C /* AppDelegate.m */; };
 		6DD1559819E301EB003A740C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DD1559519E301EB003A740C /* Info.plist */; };
@@ -25,8 +30,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6D08A53119E52B0F00EE4BB7 /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
+		6D08A53219E52B0F00EE4BB7 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
+		6D08A53519E5309A00EE4BB7 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
+		6D08A53919E536FF00EE4BB7 /* Librarian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Librarian.h; sourceTree = "<group>"; };
+		6D08A53A19E536FF00EE4BB7 /* Librarian.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Librarian.m; sourceTree = "<group>"; };
+		6D08A53C19E5383400EE4BB7 /* PDFDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDFDocument.h; sourceTree = "<group>"; };
+		6D08A53D19E5395500EE4BB7 /* PlainPDFDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlainPDFDocument.h; sourceTree = "<group>"; };
+		6D08A53E19E5395500EE4BB7 /* PlainPDFDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlainPDFDocument.m; sourceTree = "<group>"; };
+		6D08A54019E5396F00EE4BB7 /* EncryptedPDFDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncryptedPDFDocument.h; sourceTree = "<group>"; };
+		6D08A54119E5396F00EE4BB7 /* EncryptedPDFDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EncryptedPDFDocument.m; sourceTree = "<group>"; };
+		6D08A54419E5460B00EE4BB7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		6D08A54619E5463300EE4BB7 /* BundledPDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BundledPDFs; sourceTree = "<group>"; };
 		6DD1556919E2F777003A740C /* PDFun.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFun.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DD1557919E2F777003A740C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6DD1558219E2F777003A740C /* PDFunTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFunTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DD1558719E2F777003A740C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DD1558819E2F777003A740C /* PDFunTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDFunTests.m; sourceTree = "<group>"; };
@@ -54,6 +70,78 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6D08A52E19E52AE900EE4BB7 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A52F19E52AE900EE4BB7 /* ViewControllers */,
+				6D08A53019E52AE900EE4BB7 /* Views */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		6D08A52F19E52AE900EE4BB7 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A53119E52B0F00EE4BB7 /* LibraryViewController.h */,
+				6D08A53219E52B0F00EE4BB7 /* LibraryViewController.m */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		6D08A53019E52AE900EE4BB7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6D08A53419E5303700EE4BB7 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A53519E5309A00EE4BB7 /* Globals.h */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		6D08A53619E536E800EE4BB7 /* DataCore */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A53719E536E800EE4BB7 /* Librarian */,
+				6D08A53819E536E800EE4BB7 /* PDFDocument */,
+			);
+			path = DataCore;
+			sourceTree = "<group>";
+		};
+		6D08A53719E536E800EE4BB7 /* Librarian */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A53919E536FF00EE4BB7 /* Librarian.h */,
+				6D08A53A19E536FF00EE4BB7 /* Librarian.m */,
+			);
+			path = Librarian;
+			sourceTree = "<group>";
+		};
+		6D08A53819E536E800EE4BB7 /* PDFDocument */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A53C19E5383400EE4BB7 /* PDFDocument.h */,
+				6D08A53D19E5395500EE4BB7 /* PlainPDFDocument.h */,
+				6D08A53E19E5395500EE4BB7 /* PlainPDFDocument.m */,
+				6D08A54019E5396F00EE4BB7 /* EncryptedPDFDocument.h */,
+				6D08A54119E5396F00EE4BB7 /* EncryptedPDFDocument.m */,
+			);
+			path = PDFDocument;
+			sourceTree = "<group>";
+		};
+		6D08A54319E5460B00EE4BB7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A54619E5463300EE4BB7 /* BundledPDFs */,
+				6D08A54419E5460B00EE4BB7 /* Images.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		6DD1556019E2F777003A740C = {
 			isa = PBXGroup;
 			children = (
@@ -75,8 +163,11 @@
 		6DD1556B19E2F777003A740C /* PDFun */ = {
 			isa = PBXGroup;
 			children = (
-				6DD1557919E2F777003A740C /* Images.xcassets */,
+				6D08A53619E536E800EE4BB7 /* DataCore */,
+				6D08A52E19E52AE900EE4BB7 /* Interface */,
+				6D08A53419E5303700EE4BB7 /* Utility */,
 				6DD1559219E301EB003A740C /* Supporting Files */,
+				6D08A54319E5460B00EE4BB7 /* Resources */,
 			);
 			path = PDFun;
 			sourceTree = "<group>";
@@ -190,7 +281,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6DD1559819E301EB003A740C /* Info.plist in Resources */,
-				6DD1557A19E2F777003A740C /* Images.xcassets in Resources */,
+				6D08A54519E5460B00EE4BB7 /* Images.xcassets in Resources */,
+				6D08A54719E5463300EE4BB7 /* BundledPDFs in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,7 +300,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D08A53319E52B0F00EE4BB7 /* LibraryViewController.m in Sources */,
 				6DD1559919E301EB003A740C /* main.m in Sources */,
+				6D08A54219E5396F00EE4BB7 /* EncryptedPDFDocument.m in Sources */,
+				6D08A53F19E5395500EE4BB7 /* PlainPDFDocument.m in Sources */,
+				6D08A53B19E536FF00EE4BB7 /* Librarian.m in Sources */,
 				6DD1559719E301EB003A740C /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -312,7 +408,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = PDFun/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/PDFun/Supporting Files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -322,7 +419,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = PDFun/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/PDFun/Supporting Files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

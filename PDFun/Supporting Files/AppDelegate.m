@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "LibraryViewController.h"
 
 @interface AppDelegate ()
 
@@ -15,8 +16,16 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    LibraryViewController* libraryContorller = [[LibraryViewController alloc] initWithNibName:nil bundle:nil];
+    self.navigationController = [[UINavigationController alloc] initWithRootViewController:libraryContorller];
+    
+    self.window.rootViewController = self.navigationController;
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
