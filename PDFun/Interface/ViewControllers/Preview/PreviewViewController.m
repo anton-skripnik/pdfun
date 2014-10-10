@@ -14,14 +14,6 @@
 #import "PDFRenderManager.h"
 #import "Librarian.h"
 
-#warning TEST CODE. REMOVE IT!
-
-#import "SquiggleAnnotation.h"
-#import "TextAnnotation.h"
-#import "ImageAnnotation.h"
-
-#warning END OF TEST CODE. REMOVE UP TO THIS POINT.
-
 #define VIEW_BACKGROUND_COLOR                       [UIColor whiteColor]
 #define COLLECITON_VIEW_CELL_ID                     CELL_ID_WITH_SUFFIX("pagecollectionview")
 #define COLLECTION_VIEW_BACKGROUND_COLOR            [UIColor lightGrayColor]
@@ -62,28 +54,6 @@
     if ((self = [super initWithNibName:nil bundle:nil]))
     {
         self.document = document;
-        
-#warning TEST CODE. REMOVE IT!
-//        SquiggleAnnotation* testSquiggleAnnotation = [[SquiggleAnnotation alloc] init];
-////        testSquiggleAnnotation.position = CGPointMake(10, 10);
-//        [testSquiggleAnnotation.points addObject:[NSValue valueWithCGPoint:CGPointMake(0, 0)]];
-//        [testSquiggleAnnotation.points addObject:[NSValue valueWithCGPoint:CGPointMake(10, 10)]];
-//        [testSquiggleAnnotation.points addObject:[NSValue valueWithCGPoint:CGPointMake(20, 30)]];
-//        [testSquiggleAnnotation.points addObject:[NSValue valueWithCGPoint:CGPointMake(40, 100)]];
-//        [[self.document.pages[0] annotations] addObject:testSquiggleAnnotation];
-//
-//        TextAnnotation* testTextAnnotation = [[TextAnnotation alloc] init];
-////        testTextAnnotation.position = CGPointMake(200, 200);
-//        testTextAnnotation.text = @"Hello, I'm a text";
-//        [[self.document.pages[1] annotations] addObject:testTextAnnotation];
-//
-//        ImageAnnotation* testImageAnnotation = [[ImageAnnotation alloc] init];
-////        testImageAnnotation.position = CGPointMake(200, 200);
-//        testImageAnnotation.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://g.twimg.com/business/page/image/11TwitterForSmallBusiness-300_1.png"]]];
-//        [[self.document.pages[0] annotations] addObject:testImageAnnotation];
-#warning END OF TEST CODE. REMOVE UP TO THIS POINT.
-
-        
         self.renderManager = [[PDFRenderManager alloc] init];
     }
     
