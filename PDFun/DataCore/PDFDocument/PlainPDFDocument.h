@@ -16,6 +16,6 @@
 @interface PlainPDFDocument : NSObject<PDFDocumentProtocol>
 
 @property (nonatomic, copy, readonly)   NSString*           path;
-@property (nonatomic, assign, readonly) CGPDFDocumentRef    CGPDFDocument;
+@property (nonatomic, strong, readonly) NSArray*            pages;
 
 @end

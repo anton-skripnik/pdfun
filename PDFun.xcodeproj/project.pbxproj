@@ -16,6 +16,20 @@
 		6D08A55119E5A94100EE4BB7 /* TemporaryStorageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A55019E5A94100EE4BB7 /* TemporaryStorageManager.m */; };
 		6D08A55719E5B3EE00EE4BB7 /* NSFileManager+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A55619E5B3EE00EE4BB7 /* NSFileManager+Utils.m */; };
 		6D08A55B19E5BA2F00EE4BB7 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A55A19E5BA2F00EE4BB7 /* LibraryViewController.m */; };
+		6D08A55F19E5BEF000EE4BB7 /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A55E19E5BEF000EE4BB7 /* PreviewViewController.m */; };
+		6D08A56419E5C03600EE4BB7 /* PageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D08A56319E5C03600EE4BB7 /* PageCollectionViewCell.m */; };
+		6D2C478319E670F1002A06F9 /* PDFPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C478219E670F1002A06F9 /* PDFPage.m */; };
+		6D2C478719E67188002A06F9 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C478619E67188002A06F9 /* Annotation.m */; };
+		6D2C478A19E67207002A06F9 /* SquiggleAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C478919E67207002A06F9 /* SquiggleAnnotation.m */; };
+		6D2C478D19E6728A002A06F9 /* TextAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C478C19E6728A002A06F9 /* TextAnnotation.m */; };
+		6D2C479019E672CE002A06F9 /* ImageAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C478F19E672CE002A06F9 /* ImageAnnotation.m */; };
+		6D2C479419E698F9002A06F9 /* PDFRenderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C479319E698F9002A06F9 /* PDFRenderManager.m */; };
+		6D2C479819E6D213002A06F9 /* AnnotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C479719E6D213002A06F9 /* AnnotatingViewController.m */; };
+		6D2C479B19E6D4A6002A06F9 /* SquiggleAnnotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C479A19E6D4A6002A06F9 /* SquiggleAnnotatingViewController.m */; };
+		6D2C479E19E6D4CA002A06F9 /* TextAnnotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C479D19E6D4CA002A06F9 /* TextAnnotatingViewController.m */; };
+		6D2C47A119E6D4D5002A06F9 /* ImageAnnotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C47A019E6D4D5002A06F9 /* ImageAnnotatingViewController.m */; };
+		6D49CE4F19E6E03400F814CB /* AnnotatingViewController+Protected.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D49CE4E19E6E03400F814CB /* AnnotatingViewController+Protected.m */; };
+		6D49CE5319E6E6D200F814CB /* AnnotatedPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D49CE5219E6E6D200F814CB /* AnnotatedPageView.m */; };
 		6DD1558919E2F777003A740C /* PDFunTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1558819E2F777003A740C /* PDFunTests.m */; };
 		6DD1559719E301EB003A740C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1559419E301EB003A740C /* AppDelegate.m */; };
 		6DD1559819E301EB003A740C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DD1559519E301EB003A740C /* Info.plist */; };
@@ -51,6 +65,34 @@
 		6D08A55619E5B3EE00EE4BB7 /* NSFileManager+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Utils.m"; sourceTree = "<group>"; };
 		6D08A55919E5BA2E00EE4BB7 /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
 		6D08A55A19E5BA2F00EE4BB7 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
+		6D08A55D19E5BEF000EE4BB7 /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewViewController.h; sourceTree = "<group>"; };
+		6D08A55E19E5BEF000EE4BB7 /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewViewController.m; sourceTree = "<group>"; };
+		6D08A56219E5C03600EE4BB7 /* PageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageCollectionViewCell.h; sourceTree = "<group>"; };
+		6D08A56319E5C03600EE4BB7 /* PageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageCollectionViewCell.m; sourceTree = "<group>"; };
+		6D2C478119E670F1002A06F9 /* PDFPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFPage.h; sourceTree = "<group>"; };
+		6D2C478219E670F1002A06F9 /* PDFPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPage.m; sourceTree = "<group>"; };
+		6D2C478519E67188002A06F9 /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
+		6D2C478619E67188002A06F9 /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
+		6D2C478819E67207002A06F9 /* SquiggleAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SquiggleAnnotation.h; sourceTree = "<group>"; };
+		6D2C478919E67207002A06F9 /* SquiggleAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SquiggleAnnotation.m; sourceTree = "<group>"; };
+		6D2C478B19E6728A002A06F9 /* TextAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAnnotation.h; sourceTree = "<group>"; };
+		6D2C478C19E6728A002A06F9 /* TextAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAnnotation.m; sourceTree = "<group>"; };
+		6D2C478E19E672CE002A06F9 /* ImageAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageAnnotation.h; sourceTree = "<group>"; };
+		6D2C478F19E672CE002A06F9 /* ImageAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageAnnotation.m; sourceTree = "<group>"; };
+		6D2C479219E698F9002A06F9 /* PDFRenderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFRenderManager.h; sourceTree = "<group>"; };
+		6D2C479319E698F9002A06F9 /* PDFRenderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFRenderManager.m; sourceTree = "<group>"; };
+		6D2C479619E6D213002A06F9 /* AnnotatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotatingViewController.h; sourceTree = "<group>"; };
+		6D2C479719E6D213002A06F9 /* AnnotatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotatingViewController.m; sourceTree = "<group>"; };
+		6D2C479919E6D4A6002A06F9 /* SquiggleAnnotatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SquiggleAnnotatingViewController.h; sourceTree = "<group>"; };
+		6D2C479A19E6D4A6002A06F9 /* SquiggleAnnotatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SquiggleAnnotatingViewController.m; sourceTree = "<group>"; };
+		6D2C479C19E6D4CA002A06F9 /* TextAnnotatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAnnotatingViewController.h; sourceTree = "<group>"; };
+		6D2C479D19E6D4CA002A06F9 /* TextAnnotatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAnnotatingViewController.m; sourceTree = "<group>"; };
+		6D2C479F19E6D4D5002A06F9 /* ImageAnnotatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageAnnotatingViewController.h; sourceTree = "<group>"; };
+		6D2C47A019E6D4D5002A06F9 /* ImageAnnotatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageAnnotatingViewController.m; sourceTree = "<group>"; };
+		6D49CE4D19E6E03400F814CB /* AnnotatingViewController+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AnnotatingViewController+Protected.h"; sourceTree = "<group>"; };
+		6D49CE4E19E6E03400F814CB /* AnnotatingViewController+Protected.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AnnotatingViewController+Protected.m"; sourceTree = "<group>"; };
+		6D49CE5119E6E6D200F814CB /* AnnotatedPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotatedPageView.h; sourceTree = "<group>"; };
+		6D49CE5219E6E6D200F814CB /* AnnotatedPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotatedPageView.m; sourceTree = "<group>"; };
 		6DD1556919E2F777003A740C /* PDFun.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFun.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DD1558219E2F777003A740C /* PDFunTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFunTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DD1558719E2F777003A740C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -91,7 +133,9 @@
 		6D08A52F19E52AE900EE4BB7 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				6D2C479519E6D1FC002A06F9 /* Annotating */,
 				6D08A55819E5BA2E00EE4BB7 /* Library */,
+				6D08A55C19E5BEDE00EE4BB7 /* Preview */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -99,6 +143,8 @@
 		6D08A53019E52AE900EE4BB7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6D49CE5019E6E6AF00F814CB /* Annotating */,
+				6D08A56019E5C01C00EE4BB7 /* Preview */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -114,9 +160,12 @@
 		6D08A53619E536E800EE4BB7 /* DataCore */ = {
 			isa = PBXGroup;
 			children = (
+				6D2C478419E6717C002A06F9 /* Annotation */,
 				6D08A54A19E5674800EE4BB7 /* Cryptor */,
 				6D08A53719E536E800EE4BB7 /* Librarian */,
 				6D08A53819E536E800EE4BB7 /* PDFDocument */,
+				6D2C478019E670E1002A06F9 /* PDFPage */,
+				6D2C479119E698E9002A06F9 /* PDFRenderManager */,
 				6D08A54E19E5A92F00EE4BB7 /* TemporaryStorageManager */,
 			);
 			path = DataCore;
@@ -187,6 +236,91 @@
 				6D08A55A19E5BA2F00EE4BB7 /* LibraryViewController.m */,
 			);
 			path = Library;
+			sourceTree = "<group>";
+		};
+		6D08A55C19E5BEDE00EE4BB7 /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A55D19E5BEF000EE4BB7 /* PreviewViewController.h */,
+				6D08A55E19E5BEF000EE4BB7 /* PreviewViewController.m */,
+			);
+			path = Preview;
+			sourceTree = "<group>";
+		};
+		6D08A56019E5C01C00EE4BB7 /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A56119E5C01C00EE4BB7 /* PageCollectionViewCell */,
+			);
+			path = Preview;
+			sourceTree = "<group>";
+		};
+		6D08A56119E5C01C00EE4BB7 /* PageCollectionViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				6D08A56219E5C03600EE4BB7 /* PageCollectionViewCell.h */,
+				6D08A56319E5C03600EE4BB7 /* PageCollectionViewCell.m */,
+			);
+			path = PageCollectionViewCell;
+			sourceTree = "<group>";
+		};
+		6D2C478019E670E1002A06F9 /* PDFPage */ = {
+			isa = PBXGroup;
+			children = (
+				6D2C478119E670F1002A06F9 /* PDFPage.h */,
+				6D2C478219E670F1002A06F9 /* PDFPage.m */,
+			);
+			path = PDFPage;
+			sourceTree = "<group>";
+		};
+		6D2C478419E6717C002A06F9 /* Annotation */ = {
+			isa = PBXGroup;
+			children = (
+				6D2C478519E67188002A06F9 /* Annotation.h */,
+				6D2C478619E67188002A06F9 /* Annotation.m */,
+				6D2C478819E67207002A06F9 /* SquiggleAnnotation.h */,
+				6D2C478919E67207002A06F9 /* SquiggleAnnotation.m */,
+				6D2C478B19E6728A002A06F9 /* TextAnnotation.h */,
+				6D2C478C19E6728A002A06F9 /* TextAnnotation.m */,
+				6D2C478E19E672CE002A06F9 /* ImageAnnotation.h */,
+				6D2C478F19E672CE002A06F9 /* ImageAnnotation.m */,
+			);
+			path = Annotation;
+			sourceTree = "<group>";
+		};
+		6D2C479119E698E9002A06F9 /* PDFRenderManager */ = {
+			isa = PBXGroup;
+			children = (
+				6D2C479219E698F9002A06F9 /* PDFRenderManager.h */,
+				6D2C479319E698F9002A06F9 /* PDFRenderManager.m */,
+			);
+			path = PDFRenderManager;
+			sourceTree = "<group>";
+		};
+		6D2C479519E6D1FC002A06F9 /* Annotating */ = {
+			isa = PBXGroup;
+			children = (
+				6D2C479619E6D213002A06F9 /* AnnotatingViewController.h */,
+				6D2C479719E6D213002A06F9 /* AnnotatingViewController.m */,
+				6D49CE4D19E6E03400F814CB /* AnnotatingViewController+Protected.h */,
+				6D49CE4E19E6E03400F814CB /* AnnotatingViewController+Protected.m */,
+				6D2C479919E6D4A6002A06F9 /* SquiggleAnnotatingViewController.h */,
+				6D2C479A19E6D4A6002A06F9 /* SquiggleAnnotatingViewController.m */,
+				6D2C479C19E6D4CA002A06F9 /* TextAnnotatingViewController.h */,
+				6D2C479D19E6D4CA002A06F9 /* TextAnnotatingViewController.m */,
+				6D2C479F19E6D4D5002A06F9 /* ImageAnnotatingViewController.h */,
+				6D2C47A019E6D4D5002A06F9 /* ImageAnnotatingViewController.m */,
+			);
+			path = Annotating;
+			sourceTree = "<group>";
+		};
+		6D49CE5019E6E6AF00F814CB /* Annotating */ = {
+			isa = PBXGroup;
+			children = (
+				6D49CE5119E6E6D200F814CB /* AnnotatedPageView.h */,
+				6D49CE5219E6E6D200F814CB /* AnnotatedPageView.m */,
+			);
+			path = Annotating;
 			sourceTree = "<group>";
 		};
 		6DD1556019E2F777003A740C = {
@@ -348,15 +482,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D08A56419E5C03600EE4BB7 /* PageCollectionViewCell.m in Sources */,
 				6D08A55719E5B3EE00EE4BB7 /* NSFileManager+Utils.m in Sources */,
 				6DD1559919E301EB003A740C /* main.m in Sources */,
 				6D08A54219E5396F00EE4BB7 /* EncryptedPDFDocument.m in Sources */,
+				6D2C478D19E6728A002A06F9 /* TextAnnotation.m in Sources */,
+				6D2C478719E67188002A06F9 /* Annotation.m in Sources */,
 				6D08A55B19E5BA2F00EE4BB7 /* LibraryViewController.m in Sources */,
 				6D08A53F19E5395500EE4BB7 /* PlainPDFDocument.m in Sources */,
+				6D2C479B19E6D4A6002A06F9 /* SquiggleAnnotatingViewController.m in Sources */,
 				6D08A53B19E536FF00EE4BB7 /* Librarian.m in Sources */,
+				6D2C478319E670F1002A06F9 /* PDFPage.m in Sources */,
+				6D2C479419E698F9002A06F9 /* PDFRenderManager.m in Sources */,
+				6D2C479819E6D213002A06F9 /* AnnotatingViewController.m in Sources */,
+				6D2C479019E672CE002A06F9 /* ImageAnnotation.m in Sources */,
+				6D2C478A19E67207002A06F9 /* SquiggleAnnotation.m in Sources */,
 				6D08A54D19E5675300EE4BB7 /* Cryptor.m in Sources */,
+				6D2C47A119E6D4D5002A06F9 /* ImageAnnotatingViewController.m in Sources */,
+				6D2C479E19E6D4CA002A06F9 /* TextAnnotatingViewController.m in Sources */,
+				6D49CE4F19E6E03400F814CB /* AnnotatingViewController+Protected.m in Sources */,
+				6D08A55F19E5BEF000EE4BB7 /* PreviewViewController.m in Sources */,
 				6DD1559719E301EB003A740C /* AppDelegate.m in Sources */,
 				6D08A55119E5A94100EE4BB7 /* TemporaryStorageManager.m in Sources */,
+				6D49CE5319E6E6D200F814CB /* AnnotatedPageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,6 +607,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = "$(SRCROOT)/PDFun/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -470,6 +619,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = "$(SRCROOT)/PDFun/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

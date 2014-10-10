@@ -17,6 +17,7 @@
 @interface EncryptedPDFDocument : NSObject<PDFDocumentProtocol>
 
 @property (nonatomic, copy, readonly)   NSString*   path;
+@property (nonatomic, strong, readonly) NSArray*    pages;
 // The password property must be set before -openWithCompletion: is invoked in order to
 // decrypt the document.
 @property (nonatomic, copy)             NSString*   password;

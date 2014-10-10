@@ -8,15 +8,28 @@
 
 #import "PlainPDFDocument.h"
 #import "Globals.h"
+#import "PDFPage.h"
 
 @interface PlainPDFDocument ()
 
 @property (nonatomic, copy)             NSString*           path;
 @property (nonatomic, assign)           CGPDFDocumentRef    CGPDFDocument;
+@property (nonatomic, strong)           NSArray*            pages;
+
+@end
+
+@interface PlainPDFDocument (Private)
+
+- (void)_buildPagesArray;
 
 @end
 
 @implementation PlainPDFDocument
+
++ (BOOL)requiresPassword
+{
+    return NO;
+}
 
 + (NSString *)extension
 {
@@ -64,6 +77,10 @@
     
     NSURL* URL = [NSURL fileURLWithPath:self.path];
     self.CGPDFDocument = CGPDFDocumentCreateWithURL((CFURLRef)URL);
+    if (self.CGPDFDocument != NULL)
+    {
+        [self _buildPagesArray];
+    }
     
     if (completion)
     {
@@ -80,6 +97,29 @@
     {
         CGPDFDocumentRelease(self.CGPDFDocument), self.CGPDFDocument = NULL;
     }
+    if (self.pages)
+    {
+        self.pages = nil;
+    }
+}
+
+@end
+
+#pragma mark - Private methods -
+
+@implementation PlainPDFDocument (Private)
+
+- (void)_buildPagesArray
+{
+    NSAssert(self.CGPDFDocument != NULL, @"Unable to create pages array before the document is open!");
+    
+    NSMutableArray* pages = [NSMutableArray array];
+    for (int i = 1; i <= CGPDFDocumentGetNumberOfPages(self.CGPDFDocument); i++)
+    {
+        [pages addObject:[PDFPage pageWithDocument:self pageIndex:i]];
+    }
+    
+    self.pages = pages;
 }
 
 @end

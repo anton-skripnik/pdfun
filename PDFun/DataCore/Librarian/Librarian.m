@@ -11,6 +11,7 @@
 #import "TemporaryStorageManager.h"
 #import "Cryptor.h"
 #import "NSFileManager+Utils.h"
+#import "PDFRenderManager.h"
 
 #import "PlainPDFDocument.h"
 #import "EncryptedPDFDocument.h"
@@ -141,22 +142,10 @@ NSString* const LibrarianErrorDomain = @"LibrarianErrorDomain";
     
     NSFileManager* fileManager = [NSFileManager defaultManager];
     
-#warning TEST CODE. REMOVE IT!
-    // Consider moving the rendering elsewhere!
     NSString* renderedTemporaryPDFPath = [[TemporaryStorageManager sharedManager] pathForNamePrefix:newDocumentName ofType:[PlainPDFDocument extension]];
     NSURL* renderedTemporaryPDFURL = [NSURL fileURLWithPath:renderedTemporaryPDFPath];
-    CGRect mediaBoxRect = CGPDFPageGetBoxRect(CGPDFDocumentGetPage(document.CGPDFDocument, 1), kCGPDFMediaBox);
-    CGContextRef pdfContext = CGPDFContextCreateWithURL((CFURLRef)renderedTemporaryPDFURL, &mediaBoxRect, NULL);
-    NSData* pdfPageSizeData = [NSData dataWithBytes:&mediaBoxRect length:sizeof(mediaBoxRect)];
-    NSDictionary* pdfPageDictionary = @{ (id)kCGPDFContextMediaBox: pdfPageSizeData };
-    for (int page = 1; page < CGPDFDocumentGetNumberOfPages(document.CGPDFDocument); page++)
-    {
-        CGPDFContextBeginPage(pdfContext, (CFDictionaryRef)pdfPageDictionary);
-        CGContextDrawPDFPage(pdfContext, CGPDFDocumentGetPage(document.CGPDFDocument, page));
-        CGPDFContextEndPage(pdfContext);
-    }
-    CGContextRelease(pdfContext);
-#warning END OF TEST CODE. REMOVE UP TO THIS POINT.
+    PDFRenderManager* renderer = [[PDFRenderManager alloc] init];
+    [renderer renderDocument:document saveToURL:renderedTemporaryPDFURL];
     
     NSString* temporaryBinaryPath = [[renderedTemporaryPDFPath stringByDeletingPathExtension] stringByAppendingPathExtension:[EncryptedPDFDocument extension]];
     

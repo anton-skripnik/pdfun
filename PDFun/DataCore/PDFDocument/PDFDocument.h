@@ -23,7 +23,10 @@ typedef void(^PDFDocumentOpenCompletionBlock)(BOOL succeeded);
 @property (nonatomic, copy, readonly)       NSString*           path;
 @property (nonatomic, copy, readonly)       NSString*           name;
 @property (nonatomic, assign, readonly)     CGPDFDocumentRef    CGPDFDocument;
+// pages returns nil until the document is open and after it's closed.
+@property (nonatomic, strong, readonly)     NSArray*            pages;          // of PDFPage objects.
 
++ (BOOL)requiresPassword;
 + (NSString *)extension;
 + (instancetype)documentWithPath:(NSString *)path;
 

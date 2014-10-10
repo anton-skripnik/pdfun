@@ -14,19 +14,27 @@
 #import "PlainPDFDocument.h"
 #import "EncryptedPDFDocument.h"
 
+#import "PreviewViewController.h"
+
+
 #define TITLE                                               @"Library"
 #define LIBRARY_ITEM_CELL_IDENTIFIER                        CELL_ID_WITH_SUFFIX("library")
 
 #define VIEW_BACKGROUND_COLOR                               [UIColor whiteColor]
 
+
 @interface LibraryViewController ()
 
+@property (nonatomic, strong)   PDFDocument*                documentToOpen;
 @property (nonatomic, strong)   UITableView*                itemsTableView;
 
 @end
 @interface LibraryViewController (UITableViewDelegate)<UITableViewDelegate> @end
 @interface LibraryViewController (UITableViewDataSource)<UITableViewDataSource> @end
+@interface LibraryViewController (UIAlertViewDelegate)<UIAlertViewDelegate> @end
 @interface LibraryViewController (Private)
+
+- (void)_performOpeningDocument:(PDFDocument *)document;
 
 @end
 
@@ -66,6 +74,14 @@
     }];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // When we return from a preview controller, we want the toolbar hidden.
+    [self.navigationController setToolbarHidden:YES animated:YES];
+}
+
 @end
 
 #pragma mark - UITableViewDelegate methods -
@@ -76,38 +92,17 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-#warning TEST CODE. REMOVE IT!
     PDFDocument* document = [[[Librarian sharedInstance] documents] objectAtIndex:indexPath.row];
-    if ([document isKindOfClass:[EncryptedPDFDocument class]])
+    if ([[document class] requiresPassword])
     {
-        [(EncryptedPDFDocument *)document setPassword:@"Dummy_password"];
+        self.documentToOpen = document;
+        UIAlertView* requestPasswordAlertView = [[UIAlertView alloc] initWithTitle:@"Decryption" message:@"Provide the password the document was encrypted with." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Decrypt", nil];
+        requestPasswordAlertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
+        [requestPasswordAlertView show];
+        return;
     }
     
-    DLog(@"Opening document...");
-    [document openWithCompletion:^(BOOL succeeded)
-    {
-        DLog(@"Done opening document. %s", succeeded ? "success" : "failed");
-        if (succeeded)
-        {
-            DLog(@"Copying an encrypted version of the document to the Library.");
-            [[Librarian sharedInstance] addToLibraryEncryptedCopyOfDocument:document
-                                                                   withName:[document.name stringByAppendingString:@".enc"]
-                                                                   password:@"Dummy_password"
-                                                                 completion:^(NSError *error)
-            {
-                DLog(@"Done encrypting and copying. %@", error ? error : @"success");
-                [document close];
-                DLog(@"Reloading library data.");
-                [[Librarian sharedInstance] refreshDocumentsListWithCompletion:^(NSError *error)
-                {
-                    DLog(@"Done reloading library. %@", error ? error : @"success");
-                    [tableView reloadData];
-                }];
-            }];
-        }
-    }];
-#warning END OF TEST CODE. REMOVE UP TO THIS POINT.
-
+    [self _performOpeningDocument:document];
 }
 
 @end
@@ -115,11 +110,6 @@
 #pragma mark - UITableViewDataSource methods -
 
 @implementation LibraryViewController (UITableViewDataSource)
-
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-//{
-//    return 1;
-//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -135,6 +125,15 @@
     PDFDocument* document = [[[Librarian sharedInstance] documents] objectAtIndex:indexPath.row];
     itemCell.textLabel.text = document.name;
     
+    if ([[document class] requiresPassword])
+    {
+        itemCell.textLabel.font = [UIFont boldSystemFontOfSize:itemCell.textLabel.font.pointSize];
+    }
+    else
+    {
+        itemCell.textLabel.font = [UIFont systemFontOfSize:itemCell.textLabel.font.pointSize];
+    }
+    
     return itemCell;
 }
 
@@ -143,5 +142,46 @@
 #pragma mark - Private methods -
 
 @implementation LibraryViewController (Private)
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != alertView.cancelButtonIndex)
+    {
+        NSString* password = [alertView textFieldAtIndex:0].text;
+        if ([password length] >= MINIMAL_PASSWORD_LENGTH)
+        {
+            if (self.documentToOpen)
+            {
+                NSASSERT_OF_CLASS(self.documentToOpen, EncryptedPDFDocument);
+                EncryptedPDFDocument* encryptedDocumentToOpen = (EncryptedPDFDocument *)self.documentToOpen;
+                encryptedDocumentToOpen.password = password;
+                [self _performOpeningDocument:encryptedDocumentToOpen];
+            }
+        }
+        else
+        {
+            UIAlertView* badPasswordAlertView = [[UIAlertView alloc] initWithTitle:@"Bad Password!" message:[NSString stringWithFormat:@"Cannot accept the password less than %u characters long.", MINIMAL_PASSWORD_LENGTH] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [badPasswordAlertView show];
+        }
+        
+    }
+}
+
+- (void)_performOpeningDocument:(NSObject<PDFDocumentProtocol> *)document
+{
+    [document openWithCompletion:^(BOOL succeeded)
+    {
+        if (!succeeded)
+        {
+            UIAlertView* failedAlertView = [[UIAlertView alloc] initWithTitle:@"Failed!" message:@"Couldn't open the document. Sorry." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [failedAlertView show];
+        }
+        else
+        {
+            PreviewViewController* previewController = [[PreviewViewController alloc] initWithDocument:document];
+            [self.navigationController pushViewController:previewController animated:YES];
+        }
+    }];
+}
 
 @end
