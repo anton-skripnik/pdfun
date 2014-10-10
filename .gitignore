@@ -1,6 +1,3 @@
 project.xcworkspace
 xcuserdata
 .DS_Store
-
-#A file from another branch to copy code from
-./PreviewViewController.m
