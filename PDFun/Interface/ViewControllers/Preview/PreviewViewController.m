@@ -61,6 +61,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [self.document close];
+}
+
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:CGRectZero];
