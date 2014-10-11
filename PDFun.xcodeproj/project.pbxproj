@@ -28,11 +28,11 @@
 		6D2C479B19E6D4A6002A06F9 /* SquiggleAnnotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C479A19E6D4A6002A06F9 /* SquiggleAnnotatingViewController.m */; };
 		6D2C479E19E6D4CA002A06F9 /* TextAnnotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C479D19E6D4CA002A06F9 /* TextAnnotatingViewController.m */; };
 		6D2C47A119E6D4D5002A06F9 /* ImageAnnotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2C47A019E6D4D5002A06F9 /* ImageAnnotatingViewController.m */; };
+		6D4823D219E93BBE0086EADC /* ActivityIndicationOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D4823D119E93BBE0086EADC /* ActivityIndicationOverlay.m */; };
 		6D49CE4F19E6E03400F814CB /* AnnotatingViewController+Protected.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D49CE4E19E6E03400F814CB /* AnnotatingViewController+Protected.m */; };
 		6D49CE5319E6E6D200F814CB /* AnnotatedPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D49CE5219E6E6D200F814CB /* AnnotatedPageView.m */; };
 		6DD1558919E2F777003A740C /* PDFunTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1558819E2F777003A740C /* PDFunTests.m */; };
 		6DD1559719E301EB003A740C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1559419E301EB003A740C /* AppDelegate.m */; };
-		6DD1559819E301EB003A740C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DD1559519E301EB003A740C /* Info.plist */; };
 		6DD1559919E301EB003A740C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1559619E301EB003A740C /* main.m */; };
 /* End PBXBuildFile section */
 
@@ -89,6 +89,8 @@
 		6D2C479D19E6D4CA002A06F9 /* TextAnnotatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAnnotatingViewController.m; sourceTree = "<group>"; };
 		6D2C479F19E6D4D5002A06F9 /* ImageAnnotatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageAnnotatingViewController.h; sourceTree = "<group>"; };
 		6D2C47A019E6D4D5002A06F9 /* ImageAnnotatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageAnnotatingViewController.m; sourceTree = "<group>"; };
+		6D4823D019E93BBE0086EADC /* ActivityIndicationOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityIndicationOverlay.h; sourceTree = "<group>"; };
+		6D4823D119E93BBE0086EADC /* ActivityIndicationOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityIndicationOverlay.m; sourceTree = "<group>"; };
 		6D49CE4D19E6E03400F814CB /* AnnotatingViewController+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AnnotatingViewController+Protected.h"; sourceTree = "<group>"; };
 		6D49CE4E19E6E03400F814CB /* AnnotatingViewController+Protected.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AnnotatingViewController+Protected.m"; sourceTree = "<group>"; };
 		6D49CE5119E6E6D200F814CB /* AnnotatedPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotatedPageView.h; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		6D08A53019E52AE900EE4BB7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6D4823CF19E93BAF0086EADC /* ActivityIndicationOverlay */,
 				6D49CE5019E6E6AF00F814CB /* Annotating */,
 				6D08A56019E5C01C00EE4BB7 /* Preview */,
 			);
@@ -314,6 +317,15 @@
 			path = Annotating;
 			sourceTree = "<group>";
 		};
+		6D4823CF19E93BAF0086EADC /* ActivityIndicationOverlay */ = {
+			isa = PBXGroup;
+			children = (
+				6D4823D019E93BBE0086EADC /* ActivityIndicationOverlay.h */,
+				6D4823D119E93BBE0086EADC /* ActivityIndicationOverlay.m */,
+			);
+			path = ActivityIndicationOverlay;
+			sourceTree = "<group>";
+		};
 		6D49CE5019E6E6AF00F814CB /* Annotating */ = {
 			isa = PBXGroup;
 			children = (
@@ -462,7 +474,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6DD1559819E301EB003A740C /* Info.plist in Resources */,
 				6D08A54519E5460B00EE4BB7 /* Images.xcassets in Resources */,
 				6D08A54719E5463300EE4BB7 /* BundledPDFs in Resources */,
 			);
@@ -505,6 +516,7 @@
 				6DD1559719E301EB003A740C /* AppDelegate.m in Sources */,
 				6D08A55119E5A94100EE4BB7 /* TemporaryStorageManager.m in Sources */,
 				6D49CE5319E6E6D200F814CB /* AnnotatedPageView.m in Sources */,
+				6D4823D219E93BBE0086EADC /* ActivityIndicationOverlay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

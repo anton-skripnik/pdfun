@@ -13,7 +13,7 @@
 
 
 #define USAGE_HINT_TEXT                         @"Tap or drag to draw a line"
-#define USAGE_HINT_FONT                         [UIFont systemFontOfSize:10.0]
+#define USAGE_HINT_FONT                         [UIFont systemFontOfSize:14.0]
 #define USAGE_HINT_TEXT_COLOR                   [UIColor lightGrayColor]
 
 
@@ -29,8 +29,7 @@
 
 - (void)_tapGestureRecognizedBy:(UITapGestureRecognizer *)r;
 - (void)_panGestureRecognizedBy:(UIPanGestureRecognizer *)r;
-- (void)_handleSuccessfulRecognitionBy:(UIGestureRecognizer *)r;
-- (void)_addSquigglePoint:(CGPoint)p;
+- (void)_addSquigglePointWithRecognizedPosition:(CGPoint)p;
 
 @end
 
@@ -67,11 +66,9 @@
     [self.pageView addGestureRecognizer:self.tapGestureRecognizer];
 }
 
-- (void)cancel
+- (Annotation *)editedAnnotation
 {
-    [self.page.annotations removeObject:self.annotation];
-
-    [super cancel];
+    return self.annotation;
 }
 
 @end
@@ -84,39 +81,38 @@
 {
     if (r.state == UIGestureRecognizerStateBegan || r.state == UIGestureRecognizerStateChanged)
     {
-        [self _handleSuccessfulRecognitionBy:r];
+        [self _addSquigglePointWithRecognizedPosition:[r locationInView:self.pageView]];
     }
 }
 
 - (void)_tapGestureRecognizedBy:(UITapGestureRecognizer *)r
 {
-    [self _handleSuccessfulRecognitionBy:r];
+    [self _addSquigglePointWithRecognizedPosition:[r locationInView:self.pageView]];
 }
 
-- (void)_handleSuccessfulRecognitionBy:(UIGestureRecognizer *)r
+- (void)_addSquigglePointWithRecognizedPosition:(CGPoint)p
 {
-    CGPoint position = [r locationInView:self.pageView];
-    // Need to flip Y coordinate in order to match Core Graphics coordinate system.
-    position.y = self.pageView.bounds.size.height - position.y;
-    position = [self.renderManager convertedPoint:position
-                       intoCoordinateSystemOfPage:self.page
-                                      fitIntoRect:self.pageView.bounds];
-    
-    [self _addSquigglePoint:position];
-    
-    [self.pageView setNeedsDisplay];
-}
+    CGPoint actualPosition = CGPointZero;
+    actualPosition.x = p.x;
+    actualPosition.y = self.pageView.bounds.size.height - p.y;
+    actualPosition = [self.renderManager convertedPoint:actualPosition
+                             intoCoordinateSystemOfPage:self.page
+                                            fitIntoRect:self.pageView.bounds];
 
-- (void)_addSquigglePoint:(CGPoint)p
-{
     if (!self.annotation)
     {
         self.annotation = [[SquiggleAnnotation alloc] init];
-        self.annotation.position = p;
+        self.annotation.position = actualPosition;
         [self.page.annotations addObject:self.annotation];
     }
     
-    [self.annotation.points addObject:[NSValue valueWithCGPoint:CGPointMake(p.x - self.annotation.position.x, p.y - self.annotation.position.y)]];
+    CGPoint pointRelativeToPosition = CGPointZero;
+    pointRelativeToPosition.x = actualPosition.x - self.annotation.position.x;
+    pointRelativeToPosition.y = actualPosition.y - self.annotation.position.y;
+    
+    [self.annotation.points addObject:[NSValue valueWithCGPoint:pointRelativeToPosition]];
+    
+    [self.pageView setNeedsDisplay];
 }
 
 @end

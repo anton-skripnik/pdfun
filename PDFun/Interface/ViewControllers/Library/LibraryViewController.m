@@ -15,6 +15,7 @@
 #import "EncryptedPDFDocument.h"
 
 #import "PreviewViewController.h"
+#import "ActivityIndicationOverlay.h"
 
 
 #define TITLE                                               @"Library"
@@ -29,6 +30,7 @@
 @property (nonatomic, strong)   UITableView*                itemsTableView;
 
 @end
+
 @interface LibraryViewController (UITableViewDelegate)<UITableViewDelegate> @end
 @interface LibraryViewController (UITableViewDataSource)<UITableViewDataSource> @end
 @interface LibraryViewController (UIAlertViewDelegate)<UIAlertViewDelegate> @end
@@ -63,12 +65,15 @@
     self.itemsTableView.dataSource = self;
     self.itemsTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.itemsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:LIBRARY_ITEM_CELL_IDENTIFIER];
-    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
     [[Librarian sharedInstance] refreshDocumentsListWithCompletion:^(NSError *error)
     {
+        self.itemsTableView.hidden = error != nil;
         if (!error)
         {
-            self.itemsTableView.hidden = NO;
             [self.itemsTableView reloadData];
         }
     }];
@@ -156,11 +161,13 @@
                 EncryptedPDFDocument* encryptedDocumentToOpen = (EncryptedPDFDocument *)self.documentToOpen;
                 encryptedDocumentToOpen.password = password;
                 [self _performOpeningDocument:encryptedDocumentToOpen];
+                
+                self.documentToOpen = nil;
             }
         }
         else
         {
-            UIAlertView* badPasswordAlertView = [[UIAlertView alloc] initWithTitle:@"Bad Password!" message:[NSString stringWithFormat:@"Cannot accept the password less than %u characters long.", MINIMAL_PASSWORD_LENGTH] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView* badPasswordAlertView = [[UIAlertView alloc] initWithTitle:@"Bad Password!" message:[NSString stringWithFormat:@"Cannot accept a password less than %u characters long.", MINIMAL_PASSWORD_LENGTH] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [badPasswordAlertView show];
         }
         
@@ -169,6 +176,9 @@
 
 - (void)_performOpeningDocument:(NSObject<PDFDocumentProtocol> *)document
 {
+    ActivityIndicationOverlay* activityIndicationOverlay = [[ActivityIndicationOverlay alloc] initWithText:@"Opening document..."];
+    [activityIndicationOverlay presentAnimatedOnTopOfView:self.view withCompletion:NULL];
+
     [document openWithCompletion:^(BOOL succeeded)
     {
         if (!succeeded)
@@ -181,6 +191,8 @@
             PreviewViewController* previewController = [[PreviewViewController alloc] initWithDocument:document];
             [self.navigationController pushViewController:previewController animated:YES];
         }
+        
+        [activityIndicationOverlay dismissAnimatedWithCompletion:NULL];
     }];
 }
 

@@ -103,6 +103,17 @@ NSString* const LibrarianErrorDomain = @"LibrarianErrorDomain";
             }
         }];
         
+        // Sort the output alphabetically.
+        [documents sortUsingComparator:^NSComparisonResult(id obj1, id obj2)
+        {
+            NSAssert([obj1 conformsToProtocol:@protocol(PDFDocumentProtocol)], @"The first object must be a PDFDocument");
+            NSAssert([obj2 conformsToProtocol:@protocol(PDFDocumentProtocol)], @"The second object must be a PDFDocument");
+            
+            PDFDocument* doc1 = (PDFDocument *)obj1;
+            PDFDocument* doc2 = (PDFDocument *)obj2;
+            return [doc1.name compare:doc2.name options:NSCaseInsensitiveSearch];
+        }];
+        
         self.documents = documents;
         
         if (completion)

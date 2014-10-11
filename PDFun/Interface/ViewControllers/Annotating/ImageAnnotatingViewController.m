@@ -26,8 +26,12 @@
 
 @interface ImageAnnotatingViewController (Private)
 
+- (void)_updateAnnotationPositionWithRecognizedPosition:(CGPoint)recognizedPosition;
+- (void)_updateAnnotationImage:(UIImage *)image;
+
 - (void)_barButtonItemTapped:(UIBarButtonItem *)item;
-- (void)_handleSuccessfulGestureRecognitionBy:(UIGestureRecognizer *)r;
+- (void)_tapGestureRecognizedBy:(UITapGestureRecognizer *)r;
+- (void)_panGestureRecognizedBy:(UIPanGestureRecognizer *)r;
 
 @end
 
@@ -48,7 +52,7 @@
     if ((self = [super initWithPDFPage:page renderManager:renderManager]))
     {
         NSMutableArray* images = [NSMutableArray array];
-        for (NSUInteger i = IMAGE_NAME_START_INDEX; i <= IMAGE_NAME_END_INDEX; i++)
+        for (unsigned int i = IMAGE_NAME_START_INDEX; i <= IMAGE_NAME_END_INDEX; i++)
         {
             NSString* imageName = [NSString stringWithFormat:IMAGE_NAME_PATTERN, i];
             UIImage* image = [UIImage imageNamed:imageName];
@@ -88,17 +92,16 @@
     [toolbarItems addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
     self.toolbarItems = toolbarItems;
     
-    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleSuccessfulGestureRecognitionBy:)];
+    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapGestureRecognizedBy:)];
     [self.pageView addGestureRecognizer:self.tapGestureRecognizer];
     
-    self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleSuccessfulGestureRecognitionBy:)];
+    self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_panGestureRecognizedBy:)];
     [self.pageView addGestureRecognizer:self.panGestureRecognizer];
 }
 
-- (void)cancel
+- (Annotation *)editedAnnotation
 {
-    [self.page.annotations removeObject:self.annotation];
-    [super cancel];
+    return self.annotation;
 }
 
 @end
@@ -107,24 +110,42 @@
 
 @implementation ImageAnnotatingViewController (Private)
 
-- (void)_barButtonItemTapped:(UIBarButtonItem *)item
+- (void)_updateAnnotationPositionWithRecognizedPosition:(CGPoint)recognizedPosition
 {
-    self.annotation.image = item.image;
+    CGPoint newAnnotationPosition = CGPointZero;
+    newAnnotationPosition.x = recognizedPosition.x;
+    // Need to flip Y coordinate in order to match Core Graphics coordinate system.
+    newAnnotationPosition.y = self.pageView.bounds.size.height - recognizedPosition.y;
+    newAnnotationPosition = [self.renderManager convertedPoint:newAnnotationPosition
+                                    intoCoordinateSystemOfPage:self.page
+                                                   fitIntoRect:self.pageView.bounds];
+    
+    self.annotation.position = newAnnotationPosition;
     [self.pageView setNeedsDisplay];
 }
 
-- (void)_handleSuccessfulGestureRecognitionBy:(UIGestureRecognizer *)r
+- (void)_updateAnnotationImage:(UIImage *)image
 {
-    CGPoint position = [r locationInView:self.pageView];
-    // Need to flip Y coordinate in order to match Core Graphics coordinate system.
-    position.y = self.pageView.bounds.size.height - position.y;
-    position = [self.renderManager convertedPoint:position
-                       intoCoordinateSystemOfPage:self.page
-                                      fitIntoRect:self.pageView.bounds];
-    
-    self.annotation.position = position;
-    
+    self.annotation.image = image;
     [self.pageView setNeedsDisplay];
+}
+
+- (void)_barButtonItemTapped:(UIBarButtonItem *)item
+{
+    [self _updateAnnotationImage:self.annotationImages[item.tag]];
+}
+
+- (void)_tapGestureRecognizedBy:(UITapGestureRecognizer *)r
+{
+    [self _updateAnnotationPositionWithRecognizedPosition:[r locationInView:self.pageView]];
+}
+
+- (void)_panGestureRecognizedBy:(UIPanGestureRecognizer *)r
+{
+    if (r.state == UIGestureRecognizerStateBegan || r.state == UIGestureRecognizerStateChanged)
+    {
+        [self _updateAnnotationPositionWithRecognizedPosition:[r locationInView:self.pageView]];
+    }
 }
 
 @end

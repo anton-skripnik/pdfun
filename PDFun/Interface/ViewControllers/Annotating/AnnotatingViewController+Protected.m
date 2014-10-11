@@ -7,13 +7,20 @@
 //
 
 #import "AnnotatingViewController+Protected.h"
+#import "Globals.h"
 
 @implementation AnnotatingViewController (Protected)
 
 @dynamic pageView;
 
+- (Annotation *)editedAnnotation
+{
+    ENSURE_METHOD_IS_OVERRIDEN;
+}
+
 - (void)cancel
 {
+    [self.page.annotations removeObject:[self editedAnnotation]];
     [self.delegate annotatingViewControllerRequestsDimsissing:self];
 }
 

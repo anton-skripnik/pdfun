@@ -11,25 +11,32 @@
 #import "Globals.h"
 #import "TextAnnotation.h"
 
-#define TEXT_FIELD_WIDTH                            250
-#define TEXT_FIELD_HEIGHT                           20
-#define DEFAULT_ANNOTATION_TEXT                     @"<Placeholder>"
+#define HINT_TEXT               @"Long press to set text. Drag or tap to move."
+#define HINT_TEXT_COLOR         [UIColor lightGrayColor]
+#define HINT_FONT               [UIFont systemFontOfSize:14.0]
 
 @interface TextAnnotatingViewController ()
 
-@property (nonatomic, strong)       TextAnnotation*             annotation;
-@property (nonatomic, strong)       UITapGestureRecognizer*     tapGestureRecognizer;
-@property (nonatomic, strong)       UIPanGestureRecognizer*     panGestureRecognizer;
-@property (nonatomic, strong)       UITextField*                textField;
+@property (nonatomic, strong)       TextAnnotation*                 annotation;
+@property (nonatomic, strong)       UITapGestureRecognizer*         tapGestureRecognizer;
+@property (nonatomic, strong)       UIPanGestureRecognizer*         panGestureRecognizer;
+@property (nonatomic, strong)       UILongPressGestureRecognizer*   longPressGestureRecognizer;
 
 @end
 
-@interface TextAnnotatingViewController (UITextFieldDelegate)<UITextFieldDelegate> @end
+@interface TextAnnotatingViewController (UIAlertViewDelegate)<UIAlertViewDelegate> @end
 @interface TextAnnotatingViewController (Private)
+
+- (void)_spawnAnnotationIfNecessary;
+
+- (void)_updateAnnotationPositionWithRecognizedPosition:(CGPoint)recognizedPosition;
+- (void)_updateAnnotationText:(NSString *)annotationText;
 
 - (void)_tapGestureRecognizedBy:(UITapGestureRecognizer *)r;
 - (void)_panGestureRecognizedBy:(UIPanGestureRecognizer *)r;
-- (void)_handleSuccessfulRecognitionBy:(UIGestureRecognizer *)r;
+
+- (void)_initiateAnnotationTextInput;
+- (void)_longPressGestureRecognizedBy:(UILongPressGestureRecognizer *)r;
 
 @end
 
@@ -49,48 +56,44 @@
 {
     [super viewDidLoad];
     
-    self.textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT)];
-    self.textField.layer.borderWidth = 0.5;
-    self.textField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-    self.textField.layer.cornerRadius = 3.0;
-    self.textField.backgroundColor = [UIColor whiteColor];
-    self.textField.placeholder = @"Enter something and then tap!";
-    self.textField.delegate = self;
-    UIBarButtonItem* textFieldBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.textField];
     UIBarButtonItem* leftFlexibleItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UILabel* hintLabel = [[UILabel alloc] init];
+    hintLabel.font = HINT_FONT;
+    hintLabel.text = HINT_TEXT;
+    hintLabel.textColor = HINT_TEXT_COLOR;
+    [hintLabel sizeToFit];
+    UIBarButtonItem* hintBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:hintLabel];
     UIBarButtonItem* rightFlexibleItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    self.toolbarItems = @[ leftFlexibleItem, textFieldBarButtonItem, rightFlexibleItem ];
+    
+    self.toolbarItems = @[ leftFlexibleItem, hintBarButtonItem, rightFlexibleItem ];
     
     self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapGestureRecognizedBy:)];
     [self.pageView addGestureRecognizer:self.tapGestureRecognizer];
     
     self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_panGestureRecognizedBy:)];
     [self.pageView addGestureRecognizer:self.panGestureRecognizer];
+    
+    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_longPressGestureRecognizedBy:)];
+    [self.pageView addGestureRecognizer:self.longPressGestureRecognizer];
 }
 
-- (void)cancel
+- (Annotation *)editedAnnotation
 {
-    [[self.page annotations] removeObject:self.annotation];
-    [super cancel];
+    return self.annotation;
 }
 
 @end
 
-#pragma mark - UITextFieldDelegate methods -
+#pragma mark - UIAlertViewDelegate -
 
-@implementation TextAnnotatingViewController (UITextFieldDelegate)
+@implementation TextAnnotatingViewController (UIAlertViewDelegate)
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    [self.textField resignFirstResponder];
-   
-    if (self.annotation)
+    if (buttonIndex != alertView.cancelButtonIndex)
     {
-        self.annotation.text = self.textField.text;
-        [self.pageView setNeedsDisplay];
+        [self _updateAnnotationText:[[alertView textFieldAtIndex:0] text]];
     }
-    
-    return YES;
 }
 
 @end
@@ -99,38 +102,69 @@
 
 @implementation TextAnnotatingViewController (Private)
 
+- (void)_spawnAnnotationIfNecessary
+{
+    if (!self.annotation)
+    {
+        self.annotation = [[TextAnnotation alloc] init];
+        [self.page.annotations addObject:self.annotation];
+    }
+}
+
+- (void)_updateAnnotationPositionWithRecognizedPosition:(CGPoint)recognizedPosition
+{
+    [self _spawnAnnotationIfNecessary];
+    
+    CGPoint newAnnotationPosition = CGPointZero;
+    newAnnotationPosition.x = recognizedPosition.x;
+    // Need to flip Y coordinate in order to match Core Graphics coordinate system.
+    newAnnotationPosition.y = self.pageView.bounds.size.height - recognizedPosition.y;
+    newAnnotationPosition = [self.renderManager convertedPoint:newAnnotationPosition
+                                    intoCoordinateSystemOfPage:self.page
+                                                   fitIntoRect:self.pageView.bounds];
+    
+    self.annotation.position = newAnnotationPosition;
+    [self.pageView setNeedsDisplay];
+}
+
+- (void)_updateAnnotationText:(NSString *)annotationText
+{
+    [self _spawnAnnotationIfNecessary];
+    self.annotation.text = annotationText;
+    [self.pageView setNeedsDisplay];
+}
+
 - (void)_tapGestureRecognizedBy:(UITapGestureRecognizer *)r
 {
-    [self _handleSuccessfulRecognitionBy:r];
+    [self _updateAnnotationPositionWithRecognizedPosition:[r locationInView:self.pageView]];
 }
 
 - (void)_panGestureRecognizedBy:(UIPanGestureRecognizer *)r
 {
     if (r.state == UIGestureRecognizerStateBegan || r.state == UIGestureRecognizerStateChanged)
     {
-        [self _handleSuccessfulRecognitionBy:r];
+        [self _updateAnnotationPositionWithRecognizedPosition:[r locationInView:self.pageView]];
     }
 }
 
-- (void)_handleSuccessfulRecognitionBy:(UIGestureRecognizer *)r
+- (void)_initiateAnnotationTextInput
 {
-    if (!self.annotation)
-    {
-        self.annotation = [[TextAnnotation alloc] init];
-        self.annotation.text = self.textField.text;
-        [self.page.annotations addObject:self.annotation];
-    }
-    
-    CGPoint position = [r locationInView:self.pageView];
-    // Need to flip Y coordinate in order to match Core Graphics coordinate system.
-    position.y = self.pageView.bounds.size.height - position.y;
-    position = [self.renderManager convertedPoint:position
-                       intoCoordinateSystemOfPage:self.page
-                                      fitIntoRect:self.pageView.bounds];
-    
-    self.annotation.position = position;
-    
-    [self.pageView setNeedsDisplay];
+    // Displaying the alert takes a bunch of time, especially for the first time.
+    // Apparently, it has something to do with lowe performing operation on the main thread (wild guess: the rendering)
+    // TODO: Check if it's still slow after redrering optimizations and, if so, consider not using alert view. 
+
+    UIAlertView* setAnnotationTextAlert = [[UIAlertView alloc] initWithTitle:@"Annotation text" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    setAnnotationTextAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [setAnnotationTextAlert show];
 }
+
+- (void)_longPressGestureRecognizedBy:(UILongPressGestureRecognizer *)r
+{
+    if (r.state == UIGestureRecognizerStateBegan)
+    {
+        [self _initiateAnnotationTextInput];
+    }
+}
+
 
 @end

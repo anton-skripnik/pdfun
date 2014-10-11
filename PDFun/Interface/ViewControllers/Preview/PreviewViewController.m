@@ -9,6 +9,7 @@
 #import "PreviewViewController.h"
 #import "AnnotatingViewController.h"
 #import "PageCollectionViewCell.h"
+#import "ActivityIndicationOverlay.h"
 
 #import "Globals.h"
 #import "PDFRenderManager.h"
@@ -154,7 +155,6 @@
     PDFPage* page = self.document.pages[indexPath.item];
     CGRect pageMediaBoxRect = page.mediaBoxRect;
     CGSize pageSize = pageMediaBoxRect.size;
-    DLog(@"Media box is %@", NSStringFromCGRect(pageMediaBoxRect));
     
     CGSize itemSize = CGSizeZero;
     if (pageSize.width > pageSize.height)
@@ -220,7 +220,7 @@
         }
         else
         {
-            UIAlertView* badPasswordAlertView = [[UIAlertView alloc] initWithTitle:@"Bad Password!" message:[NSString stringWithFormat:@"Cannot accept the password less than %u characters long.", MINIMAL_PASSWORD_LENGTH] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView* badPasswordAlertView = [[UIAlertView alloc] initWithTitle:@"Bad Password!" message:[NSString stringWithFormat:@"Cannot accept a password less than %u characters long.", MINIMAL_PASSWORD_LENGTH] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [badPasswordAlertView show];
         }
     }
@@ -276,6 +276,9 @@
 
 - (void)_encryptAndStoreDocumentCopyWithPassword:(NSString *)password
 {
+    ActivityIndicationOverlay* activityIndicationOverlay = [[ActivityIndicationOverlay alloc] initWithText:@"Saving..."];
+    [activityIndicationOverlay presentAnimatedOnTopOfView:self.view withCompletion:NULL];
+
     // TODO: Consider letting user specify the name of new document.
     NSString* encryptedDocumentName = [self.document.name stringByAppendingString:@".enc"];
 
@@ -296,6 +299,8 @@
             UIAlertView* successAlert = [[UIAlertView alloc] initWithTitle:@"Success!" message:@"An encrypted copy of the document has been added to the Library." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [successAlert show];
         }
+        
+        [activityIndicationOverlay dismissAnimatedWithCompletion:NULL];
     }];
 }
 
