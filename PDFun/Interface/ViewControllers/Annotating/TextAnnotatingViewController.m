@@ -107,7 +107,7 @@
     if (!self.annotation)
     {
         self.annotation = [[TextAnnotation alloc] init];
-        [self.page.annotations addObject:self.annotation];
+        self.pageView.annotation = self.annotation;
     }
 }
 
@@ -124,14 +124,14 @@
                                                    fitIntoRect:self.pageView.bounds];
     
     self.annotation.position = newAnnotationPosition;
-    [self.pageView setNeedsDisplay];
+    [self.pageView updateAnnotation];
 }
 
 - (void)_updateAnnotationText:(NSString *)annotationText
 {
     [self _spawnAnnotationIfNecessary];
     self.annotation.text = annotationText;
-    [self.pageView setNeedsDisplay];
+    [self.pageView updateAnnotation];
 }
 
 - (void)_tapGestureRecognizedBy:(UITapGestureRecognizer *)r
@@ -150,7 +150,7 @@
 - (void)_initiateAnnotationTextInput
 {
     // Displaying the alert takes a bunch of time, especially for the first time.
-    // Apparently, it has something to do with lowe performing operation on the main thread (wild guess: the rendering)
+    // Apparently, it has something to do with low performance operation on the main thread (wild guess: the rendering)
     // TODO: Check if it's still slow after redrering optimizations and, if so, consider not using alert view. 
 
     UIAlertView* setAnnotationTextAlert = [[UIAlertView alloc] initWithTitle:@"Annotation text" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];

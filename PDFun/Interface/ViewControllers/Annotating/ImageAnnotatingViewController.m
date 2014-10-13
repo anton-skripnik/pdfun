@@ -64,7 +64,6 @@
         self.annotationImages = images;
         self.annotation = [[ImageAnnotation alloc] init];
         self.annotation.image = self.annotationImages.firstObject;
-        [self.page.annotations addObject:self.annotation];
     }
     
     return self;
@@ -97,6 +96,8 @@
     
     self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_panGestureRecognizedBy:)];
     [self.pageView addGestureRecognizer:self.panGestureRecognizer];
+    
+    self.pageView.annotation = self.annotation;
 }
 
 - (Annotation *)editedAnnotation
@@ -121,13 +122,13 @@
                                                    fitIntoRect:self.pageView.bounds];
     
     self.annotation.position = newAnnotationPosition;
-    [self.pageView setNeedsDisplay];
+    [self.pageView updateAnnotation];
 }
 
 - (void)_updateAnnotationImage:(UIImage *)image
 {
     self.annotation.image = image;
-    [self.pageView setNeedsDisplay];
+    [self.pageView updateAnnotation];
 }
 
 - (void)_barButtonItemTapped:(UIBarButtonItem *)item

@@ -14,6 +14,6 @@
 @interface PageCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong)   PDFPage*            page;
-@property (nonatomic, weak)     PDFRenderManager*   renderManager;
+@property (nonatomic, strong)   PDFRenderManager*   renderManager;
 
 @end

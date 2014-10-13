@@ -71,6 +71,14 @@
     return self.annotation;
 }
 
+- (void)accept
+{
+    // Should be a wise thing, not to store the path in memory. Or not.
+    // TODO: Check the performance with the line commented out and present.
+    self.annotation.renderUsingPath = NO;
+    [super accept];
+}
+
 @end
 
 #pragma mark - Private methods -
@@ -103,16 +111,19 @@
     {
         self.annotation = [[SquiggleAnnotation alloc] init];
         self.annotation.position = actualPosition;
-        [self.page.annotations addObject:self.annotation];
+        self.annotation.renderUsingPath = YES;
+        self.pageView.annotation = self.annotation;
+    }
+    else
+    {
+        CGPoint pointRelativeToPosition = CGPointZero;
+        pointRelativeToPosition.x = actualPosition.x - self.annotation.position.x;
+        pointRelativeToPosition.y = actualPosition.y - self.annotation.position.y;
+        
+        [self.annotation addPoint:pointRelativeToPosition];
     }
     
-    CGPoint pointRelativeToPosition = CGPointZero;
-    pointRelativeToPosition.x = actualPosition.x - self.annotation.position.x;
-    pointRelativeToPosition.y = actualPosition.y - self.annotation.position.y;
-    
-    [self.annotation.points addObject:[NSValue valueWithCGPoint:pointRelativeToPosition]];
-    
-    [self.pageView setNeedsDisplay];
+    [self.pageView updateAnnotation];
 }
 
 @end

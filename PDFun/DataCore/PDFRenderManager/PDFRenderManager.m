@@ -8,7 +8,6 @@
 
 #import "PDFRenderManager.h"
 #import "Globals.h"
-#import "Annotation.h"
 
 @interface PDFRenderManager (Private)
 
@@ -17,6 +16,20 @@
 @end
 
 @implementation PDFRenderManager
+
+- (void)renderStandaloneAnnotation:(Annotation *)annotation inContext:(CGContextRef)context forPage:(PDFPage *)page fitIntoSize:(CGSize)size
+{
+    NSASSERT_NOT_NIL(annotation);
+    NSAssert(context != NULL, @"Need a context to draw into!");
+    NSASSERT_NOT_NIL(page);
+    
+    CGRect boundingRect = CGRectMake(0, 0, size.width, size.height);
+    CGAffineTransform pageTransform = [self _drawingTransformForPage:page fittingIntoRect:boundingRect];
+    CGContextConcatCTM(context, pageTransform);
+    
+    CGContextTranslateCTM(context, annotation.position.x, annotation.position.y);
+    [annotation renderInContext:context];
+}
 
 - (void)renderPage:(PDFPage *)page inContext:(CGContextRef)context size:(CGSize)size
 {
@@ -39,6 +52,7 @@
         Annotation* annotation = obj;
         
         CGContextSaveGState(context);
+        CGContextTranslateCTM(context, annotation.position.x, annotation.position.y);
         [annotation renderInContext:context];
         CGContextRestoreGState(context);
     }];
@@ -67,6 +81,25 @@
     CGAffineTransform pageDrawingTransform = [self _drawingTransformForPage:page fittingIntoRect:boundingRect];
     CGAffineTransform invertedDrawingTransform = CGAffineTransformInvert(pageDrawingTransform);
     return CGPointApplyAffineTransform(point, invertedDrawingTransform);
+}
+
+- (CGPoint)convertedPoint:(CGPoint)point fromCoordinateSystemOfPage:(PDFPage *)page fitIntoRect:(CGRect)boundingRect
+{
+    CGAffineTransform pageDrawingTransform = [self _drawingTransformForPage:page fittingIntoRect:boundingRect];
+    return CGPointApplyAffineTransform(point, pageDrawingTransform);
+}
+
+- (CGRect)convertedRect:(CGRect)rect intoCoordinateSystemOfPage:(PDFPage *)page fitIntoRect:(CGRect)boundingRect
+{
+    CGAffineTransform pageDrawingTransform = [self _drawingTransformForPage:page fittingIntoRect:boundingRect];
+    CGAffineTransform invertedDrawingTransform = CGAffineTransformInvert(pageDrawingTransform);
+    return CGRectApplyAffineTransform(rect, invertedDrawingTransform);
+}
+
+- (CGRect)convertedRect:(CGRect)rect fromCoordinateSystemOfPage:(PDFPage *)page fitIntoRect:(CGRect)boundingRect
+{
+    CGAffineTransform pageDrawingTransform = [self _drawingTransformForPage:page fittingIntoRect:boundingRect];
+    return CGRectApplyAffineTransform(rect, pageDrawingTransform);
 }
 
 @end

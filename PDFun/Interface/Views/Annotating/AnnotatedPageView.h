@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "PDFPage.h"
 #import "PDFRenderManager.h"
+#import "Annotation.h"
 
 //
 //  A view to display unchangable PDF content (including previously placed annotations) atop
@@ -16,7 +17,10 @@
 //
 @interface AnnotatedPageView : UIView
 
-@property (nonatomic, strong)   PDFPage*            page;
-@property (nonatomic, weak)     PDFRenderManager*   renderManager;
+@property (nonatomic, strong)       PDFPage*            page;
+@property (nonatomic, strong)       Annotation*         annotation;
+@property (nonatomic, strong)       PDFRenderManager*   renderManager;
+
+- (void)updateAnnotation;
 
 @end

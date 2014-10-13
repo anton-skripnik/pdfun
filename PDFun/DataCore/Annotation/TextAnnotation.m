@@ -34,18 +34,21 @@
         return;
     }
     
+    UIFont* font = self.font;
+    CTFontRef ctFont = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
+    NSDictionary* attributes =
+    @{
+      (__bridge NSString *)kCTFontAttributeName: (__bridge id)ctFont,
+      (__bridge NSString *)kCTForegroundColorAttributeName: (__bridge id)self.textColor.CGColor,
+    };
     NSAttributedString* textAttributedString = [[NSAttributedString alloc] initWithString:self.text
-                                                                               attributes:
-                                                                               @{
-                                                                                    NSFontAttributeName: self.font,
-                                                                                    NSForegroundColorAttributeName: self.textColor,
-                                                                               }];
+                                                                               attributes:attributes];
+    CFRelease(ctFont);
     
-    CTLineRef line = CTLineCreateWithAttributedString((CFAttributedStringRef)textAttributedString);
-    CGContextSetTextPosition(context, self.position.x, self.position.y);
-    CGContextSetTextDrawingMode(context, kCGTextFillStrokeClip);
+    CTLineRef line = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)textAttributedString);
+    CGContextSetTextPosition(context, 0, 0);
+    CGContextSetTextDrawingMode(context, kCGTextFill);
     CTLineDraw(line, context);
-    
     CFRelease(line);
 }
 

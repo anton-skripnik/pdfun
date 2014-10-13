@@ -14,7 +14,7 @@
 {
     NSAssert(context != NULL, @"Cannot render with no context!");
     
-    CGRect imageRect = CGRectMake(self.position.x, self.position.y, self.image.size.width, self.image.size.height);
+    CGRect imageRect = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
     CGContextDrawImage(context, imageRect, self.image.CGImage);
 }
 

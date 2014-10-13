@@ -20,12 +20,12 @@
 
 - (void)cancel
 {
-    [self.page.annotations removeObject:[self editedAnnotation]];
     [self.delegate annotatingViewControllerRequestsDimsissing:self];
 }
 
 - (void)accept
 {
+    [self.page.annotations addObject:[self editedAnnotation]];
     [self.delegate annotatingViewControllerRequestsDimsissing:self];
 }
 
