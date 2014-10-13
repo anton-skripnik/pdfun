@@ -23,7 +23,6 @@
 @interface AnnotatedPageView (Private)
 
 - (void)_createPageLayer;
-- (void)_updatePageLayer;
 - (void)_createAnnotationLayer;
 - (void)_updateAnnotationLayer;
 
@@ -40,28 +39,28 @@
 {
     [super layoutSubviews];
     
-    [self _updatePageLayer];
-    [self _updateAnnotationLayer];
+    [self _createPageLayer];
+    [self _createAnnotationLayer];
 }
 
 - (void)setPage:(PDFPage *)page
 {
     _page = page;
-    [self _updatePageLayer];
-    [self _updateAnnotationLayer];
+    [self _createPageLayer];
+    [self _createAnnotationLayer];
 }
 
 - (void)setAnnotation:(Annotation *)annotation
 {
     _annotation = annotation;
-    [self _updateAnnotationLayer];
+    [self _createAnnotationLayer];
 }
 
 - (void)setRenderManager:(PDFRenderManager *)renderManager
 {
     _renderManager = renderManager;
-    [self _updatePageLayer];
-    [self _updateAnnotationLayer];
+    [self _createPageLayer];
+    [self _createAnnotationLayer];
 }
 
 @end
@@ -72,109 +71,37 @@
 
 - (void)_createPageLayer
 {
-    self.pageLayer = [CALayer layer];
-    self.pageLayer.contentsScale = [[UIScreen mainScreen] scale];
-    self.pageLayer.actions = @{ @"contents": [NSNull null] };
-    [self.layer addSublayer:self.pageLayer];
-}
-
-- (void)_updatePageLayer
-{
     if (!self.page || !self.renderManager)
     {
         return;
     }
 
-    if (!self.pageLayer)
-    {
-        [self _createPageLayer];
-    }
-    
-    self.pageLayer.bounds = self.bounds;
-    self.pageLayer.anchorPoint = CGPointMake(0.5, 0.5);
-    self.pageLayer.position = CGPointMake(roundf(self.bounds.size.width * 0.5), roundf(self.bounds.size.height * 0.5));
-    
-    int bitmapWidth = self.bounds.size.width * self.pageLayer.contentsScale;
-    int bitmapHeight = self.bounds.size.height * self.pageLayer.contentsScale;
-    
-    if (bitmapWidth == 0 || bitmapHeight == 0)
-    {
-        return;
-    }
-    
-    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef pageLayerContentBitmapContext = CGBitmapContextCreate(NULL,
-                                                                       bitmapWidth,
-                                                                       bitmapHeight,
-                                                                       8,
-                                                                       4 * bitmapWidth,
-                                                                       colorspace,
-                                                                       (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
-    
-    CGContextScaleCTM(pageLayerContentBitmapContext, self.pageLayer.contentsScale, self.pageLayer.contentsScale);
-    [self.renderManager renderPage:self.page inContext:pageLayerContentBitmapContext size:self.bounds.size];
-    
-    CGImageRef pageLayerContentsImage = CGBitmapContextCreateImage(pageLayerContentBitmapContext);
-    self.pageLayer.contents = (__bridge id)pageLayerContentsImage;
-    
-    CGColorSpaceRelease(colorspace);
-    CGContextRelease(pageLayerContentBitmapContext);
-    CGImageRelease(pageLayerContentsImage);
+    // Copy the layer not to steal it from currently owning superlayer.
+    CALayer* pageLayer = [self.renderManager layerWithContentsOfLayerForPage:self.page withSize:self.bounds.size];
+    self.pageLayer = pageLayer;
+    self.pageLayer.anchorPoint = CGPointZero;
+    self.pageLayer.position = CGPointZero;
+    [self.layer addSublayer:self.pageLayer];
 }
 
 - (void)_createAnnotationLayer
 {
-    self.annotationLayer = [CALayer layer];
-    self.annotationLayer.contentsScale = [[UIScreen mainScreen] scale];
-    self.annotationLayer.actions = @{ @"contents": [NSNull null] };
+    if (!self.renderManager || !self.page || !self.annotation)
+    {
+        return;
+    }
+
+    self.annotationLayer = [self.renderManager layerForAnnotation:self.annotation forPage:self.page pageSize:self.bounds.size];
+    self.annotationLayer.anchorPoint = CGPointZero;
+    self.annotationLayer.position = CGPointZero;
     [self.layer addSublayer:self.annotationLayer];
+    
+    [self _updateAnnotationLayer];
 }
 
 - (void)_updateAnnotationLayer
 {
-    if (!self.page || !self.annotation || !self.renderManager)
-    {
-        return;
-    }
-
-    if (!self.annotationLayer)
-    {
-        [self _createAnnotationLayer];
-    }
-
-    self.annotationLayer.bounds = self.bounds;
-    self.annotationLayer.anchorPoint = CGPointZero;
-    self.annotationLayer.position = CGPointZero;
-    
-    int bitmapWidth = self.bounds.size.width * self.pageLayer.contentsScale;
-    int bitmapHeight = self.bounds.size.height * self.pageLayer.contentsScale;
-    
-    if (bitmapWidth == 0 || bitmapHeight == 0)
-    {
-        return;
-    }
-    
-    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef annotationLayerContentBitmapContext = CGBitmapContextCreate(NULL,
-                                                                             bitmapWidth,
-                                                                             bitmapHeight,
-                                                                             8,
-                                                                             4 * bitmapWidth,
-                                                                             colorspace,
-                                                                             (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
-    
-    CGContextScaleCTM(annotationLayerContentBitmapContext, self.pageLayer.contentsScale, self.pageLayer.contentsScale);
-    [self.renderManager renderStandaloneAnnotation:self.annotation
-                                         inContext:annotationLayerContentBitmapContext
-                                           forPage:self.page
-                                       fitIntoSize:self.bounds.size];
-    
-    CGImageRef annotationLayerContentsImage = CGBitmapContextCreateImage(annotationLayerContentBitmapContext);
-    self.annotationLayer.contents = (__bridge id)annotationLayerContentsImage;
-    
-    CGColorSpaceRelease(colorspace);
-    CGContextRelease(annotationLayerContentBitmapContext);
-    CGImageRelease(annotationLayerContentsImage);
+    [self.annotationLayer setNeedsDisplay];
 }
 
 @end

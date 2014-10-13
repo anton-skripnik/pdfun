@@ -16,4 +16,6 @@
 @property (nonatomic, strong)   PDFPage*            page;
 @property (nonatomic, strong)   PDFRenderManager*   renderManager;
 
+- (void)refresh;
+
 @end

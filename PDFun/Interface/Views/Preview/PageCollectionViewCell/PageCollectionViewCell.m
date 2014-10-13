@@ -8,6 +8,19 @@
 
 #import "PageCollectionViewCell.h"
 #import "PDFRenderManager.h"
+#import "Globals.h"
+
+@interface PageCollectionViewCell ()
+
+@property (nonatomic, strong)   CALayer*    pageLayer;
+
+@end
+
+@interface PageCollectionViewCell (Private)
+
+- (void)_obtainPageLayerIfNecessary;
+
+@end
 
 @implementation PageCollectionViewCell
 
@@ -15,25 +28,46 @@
 {
     [super prepareForReuse];
     
-    [self setNeedsDisplay];
+    [self.pageLayer removeFromSuperlayer];
+    self.pageLayer = nil;
 }
 
-- (void)drawRect:(CGRect)rect
+- (void)setPage:(PDFPage *)page
 {
-    [super drawRect:rect];
+    _page = page;
+    [self _obtainPageLayerIfNecessary];
+}
+
+- (void)setRenderManager:(PDFRenderManager *)renderManager
+{
+    _renderManager = renderManager;
+    [self _obtainPageLayerIfNecessary];
+}
+
+- (void)refresh
+{
+    [self.pageLayer removeFromSuperlayer];
+    self.pageLayer = nil;
     
-    if (!self.renderManager)
+    [self _obtainPageLayerIfNecessary];
+}
+
+@end
+
+@implementation PageCollectionViewCell (Private)
+
+- (void)_obtainPageLayerIfNecessary
+{
+    if (!self.page || !self.renderManager || self.pageLayer)
     {
         return;
     }
-
-    CGContextRef context = UIGraphicsGetCurrentContext();
     
-    // Flip to have Core Graphics native coordinate system.
-    CGContextTranslateCTM(context, 0, self.bounds.size.height);
-    CGContextScaleCTM(context, 1.0, -1.0);
-    
-    [self.renderManager renderPage:self.page inContext:context size:self.bounds.size];
+    self.pageLayer = [self.renderManager layerForPage:self.page withSize:self.bounds.size];
+    self.pageLayer.backgroundColor = [[UIColor greenColor] CGColor];
+    [self.layer addSublayer:self.pageLayer];
+    self.pageLayer.anchorPoint = CGPointZero;
+    self.pageLayer.position = CGPointZero;
 }
 
 @end

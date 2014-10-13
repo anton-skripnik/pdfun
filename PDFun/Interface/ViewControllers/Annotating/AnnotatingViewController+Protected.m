@@ -25,6 +25,10 @@
 
 - (void)accept
 {
+    // To force render manager spawn a layer for the page with new annotation instead of reusing the cached
+    // layer without one.
+    [self.renderManager invalidateLayerForPage:self.page];
+    
     [self.page.annotations addObject:[self editedAnnotation]];
     [self.delegate annotatingViewControllerRequestsDimsissing:self];
 }

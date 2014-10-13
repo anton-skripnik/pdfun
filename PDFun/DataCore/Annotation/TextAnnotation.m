@@ -10,7 +10,7 @@
 #import <CoreText/CoreText.h>
 
 #define DEFAULT_TEXT_COLOR              [UIColor redColor]
-#define DEFAULT_FONT                    [UIFont systemFontOfSize:24.0]
+#define DEFAULT_FONT                    [UIFont systemFontOfSize:40.0]
 
 @implementation TextAnnotation
 
@@ -34,8 +34,7 @@
         return;
     }
     
-    UIFont* font = self.font;
-    CTFontRef ctFont = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
+    CTFontRef ctFont = CTFontCreateWithName((__bridge CFStringRef)self.font.fontName, self.font.pointSize, NULL);
     NSDictionary* attributes =
     @{
       (__bridge NSString *)kCTFontAttributeName: (__bridge id)ctFont,

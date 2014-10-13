@@ -69,6 +69,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     [[Librarian sharedInstance] refreshDocumentsListWithCompletion:^(NSError *error)
     {
         self.itemsTableView.hidden = error != nil;

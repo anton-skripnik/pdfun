@@ -41,6 +41,8 @@
 
 - (void)_encryptAndStoreDocumentCopyWithPassword:(NSString *)password;
 
+- (CGSize)_sizeOfCollectionViewItemForPageWithIndex:(NSUInteger)pageIndex;
+
 @end
 
 
@@ -142,8 +144,11 @@
     UICollectionViewCell* dequeuedCell = [collectionView dequeueReusableCellWithReuseIdentifier:COLLECITON_VIEW_CELL_ID forIndexPath:indexPath];
     NSASSERT_OF_CLASS(dequeuedCell, PageCollectionViewCell);
     
+    NSInteger itemIndex = indexPath.item;
+    NSAssert(itemIndex >= 0 && itemIndex < self.document.pages.count, @"Item index %d out of expected bounds.", itemIndex);
+    
     PageCollectionViewCell* pageCell = (PageCollectionViewCell *)dequeuedCell;
-    pageCell.page = self.document.pages[indexPath.item];
+    pageCell.page = self.document.pages[itemIndex];
     pageCell.renderManager = self.renderManager;
     
     return pageCell;
@@ -157,23 +162,8 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PDFPage* page = self.document.pages[indexPath.item];
-    CGRect pageMediaBoxRect = page.mediaBoxRect;
-    CGSize pageSize = pageMediaBoxRect.size;
-    
-    CGSize itemSize = CGSizeZero;
-    if (pageSize.width > pageSize.height)
-    {
-        itemSize.width = roundf(collectionView.bounds.size.width);
-        itemSize.height = roundf(itemSize.width * (pageSize.height / pageSize.width));
-    }
-    else
-    {
-        itemSize.height = roundf(collectionView.bounds.size.height);
-        itemSize.width = roundf(itemSize.height * (pageSize.width / pageSize.height));
-    }
-    
-    return itemSize;
+    NSInteger itemIndex = indexPath.item;
+    return [self _sizeOfCollectionViewItemForPageWithIndex:itemIndex];
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
@@ -243,7 +233,7 @@
     
     // Force visible page's repaint.
     NSArray* visiblePages = [self.pagesCollectionView visibleCells];
-    [visiblePages makeObjectsPerformSelector:@selector(setNeedsDisplay)];
+    [visiblePages makeObjectsPerformSelector:@selector(refresh)];
 }
 
 @end
@@ -307,6 +297,28 @@
         
         [activityIndicationOverlay dismissAnimatedWithCompletion:NULL];
     }];
+}
+
+- (CGSize)_sizeOfCollectionViewItemForPageWithIndex:(NSUInteger)pageIndex
+{
+    NSAssert(pageIndex >= 0 && pageIndex < self.document.pages.count, @"Page index %d out of expected bounds.", pageIndex);
+    PDFPage* page = self.document.pages[pageIndex];
+    CGRect pageMediaBoxRect = page.mediaBoxRect;
+    CGSize pageSize = pageMediaBoxRect.size;
+    
+    CGSize itemSize = CGSizeZero;
+    if (pageSize.width > pageSize.height)
+    {
+        itemSize.width = roundf(self.pagesCollectionView.bounds.size.width);
+        itemSize.height = roundf(itemSize.width * (pageSize.height / pageSize.width));
+    }
+    else
+    {
+        itemSize.height = roundf(self.pagesCollectionView.bounds.size.height);
+        itemSize.width = roundf(itemSize.height * (pageSize.width / pageSize.height));
+    }
+    
+    return itemSize;
 }
 
 @end
