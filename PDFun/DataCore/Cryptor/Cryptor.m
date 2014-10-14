@@ -40,32 +40,17 @@ NSString* const CCCryptorErrorDomain = @"CCCryptorErrorDomain";
 // Might need put additional info into the binary (hash or something) to check the data when decyphering it.
 // TODO: Consider stream cyphering for large files.
 
-- (void)encryptSourcePDFAt:(NSString *)sourcePDFPath
-              intoBinaryAt:(NSString *)destinationBinaryPath
-              withPassword:(NSString *)password
-                completion:(CryptorCompletionBlock)completion
+- (void)encryptSourcePDFData:(NSData *)sourcePDFData
+                intoBinaryAt:(NSString *)destinationBinaryPath
+                withPassword:(NSString *)password
+                  completion:(CryptorCompletionBlock)completion
 {
-    NSASSERT_NOT_NIL(sourcePDFPath);
+    NSASSERT_NOT_NIL(sourcePDFData);
     NSASSERT_NOT_NIL(destinationBinaryPath);
     NSASSERT_NOT_NIL(password);
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
     {
-        NSError* /*__autoreleasing*/ sourcePDFReadingError = nil; // Not autoreleasing to remain until the completion call.
-        NSData* sourcePDFData = [NSData dataWithContentsOfFile:sourcePDFPath options:0 error:&sourcePDFReadingError];
-        if (!sourcePDFData)
-        {
-            DLog(@"Error reading source PDF %@: %@", sourcePDFPath, sourcePDFReadingError);
-            if (completion)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^
-                {
-                    completion(sourcePDFReadingError);
-                });
-            }
-            return;
-        }
-        
         NSData* iv = [self _rubbishDataOfLength:IV_LENGTH];
         if (!iv)
         {
@@ -141,7 +126,7 @@ NSString* const CCCryptorErrorDomain = @"CCCryptorErrorDomain";
         if (status != kCCSuccess)
         {
             NSError* cccryptorError = [NSError errorWithDomain:CCCryptorErrorDomain code:status userInfo:nil];
-            DLog(@"Error while trying to encrypt %@: %@", sourcePDFPath, cccryptorError);
+            DLog(@"Error while trying to encrypt %@: %@", destinationBinaryPath, cccryptorError);
             if (completion)
             {
                 dispatch_async(dispatch_get_main_queue(), ^
@@ -182,12 +167,12 @@ NSString* const CCCryptorErrorDomain = @"CCCryptorErrorDomain";
 }
 
 - (void)decryptSourceBinaryAt:(NSString *)sourceBinaryPath
-                    intoPDFAt:(NSString *)destinationPDFPath
+                  intoPDFData:(NSMutableData *)desinationPDFData
                  withPassword:(NSString *)password
                    completion:(CryptorCompletionBlock)completion
 {
     NSASSERT_NOT_NIL(sourceBinaryPath);
-    NSASSERT_NOT_NIL(destinationPDFPath);
+    NSASSERT_NOT_NIL(desinationPDFData);
     NSASSERT_NOT_NIL(password);
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
@@ -269,7 +254,7 @@ NSString* const CCCryptorErrorDomain = @"CCCryptorErrorDomain";
         // ciphers, the output length is never larger than the input length plus the block size.
         // https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/CCCrypt.3cc.html
         NSUInteger bufferLength = pdfData.length + ALGORITHM_BLOCK_SIZE;
-        NSMutableData* bufferData = [[NSMutableData alloc] initWithLength:bufferLength];
+        desinationPDFData.length = bufferLength;
         size_t actualDecryptedDataLength = 0;
         CCCryptorStatus status = CCCrypt(kCCDecrypt,
                                          ALGORITHM,
@@ -279,8 +264,8 @@ NSString* const CCCryptorErrorDomain = @"CCCryptorErrorDomain";
                                          iv.bytes,
                                          pdfData.bytes,
                                          pdfData.length,
-                                         bufferData.mutableBytes,
-                                         bufferData.length,
+                                         desinationPDFData.mutableBytes,
+                                         desinationPDFData.length,
                                          &actualDecryptedDataLength);
         if (status != kCCSuccess)
         {
@@ -298,22 +283,7 @@ NSString* const CCCryptorErrorDomain = @"CCCryptorErrorDomain";
         }
         
         NSAssert(bufferLength >= actualDecryptedDataLength, @"Man page lied!");
-        bufferData.length = actualDecryptedDataLength;
-        
-        NSError* destinationPDFWriteError = nil;
-        if (![bufferData writeToFile:destinationPDFPath options:0 error:&destinationPDFWriteError])
-        {
-            DLog(@"Error while writing down decrypted data at %@: %@", destinationPDFPath, destinationPDFWriteError);
-            if (completion)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^
-                {
-                    completion(destinationPDFWriteError);
-                });
-            }
-            
-            return;
-        }
+        desinationPDFData.length = actualDecryptedDataLength;
         
         if (completion)
         {

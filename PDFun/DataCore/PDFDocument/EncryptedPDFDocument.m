@@ -15,7 +15,6 @@
 @interface EncryptedPDFDocument()
 
 @property (nonatomic, copy)         NSString*           path;
-@property (nonatomic, copy)         NSString*           temporaryPlainPDFPath;
 @property (nonatomic, assign)       CGPDFDocumentRef    CGPDFDocument;
 @property (nonatomic, strong)       NSArray*            pages;
 
@@ -81,8 +80,7 @@
         return;
     }
     
-    NSString* temporaryPlainPDFPath = [[TemporaryStorageManager sharedManager] pathForNamePrefix:self.name ofType:@"pdf"];
-    NSString* temporaryEncryptedCopyPath = [[temporaryPlainPDFPath stringByDeletingPathExtension] stringByAppendingPathExtension:self.class.extension];
+    NSString* temporaryEncryptedCopyPath = [[TemporaryStorageManager sharedManager] pathForNamePrefix:self.name ofType:[[self class] extension]];
     NSError* copyingError = nil;
     if (![fileManager copyItemAtPath:self.path toPath:temporaryEncryptedCopyPath error:&copyingError])
     {
@@ -97,9 +95,10 @@
         return;
     }
     
+    NSMutableData* pdfData = [NSMutableData data];
     Cryptor* __block cryptor = [[Cryptor alloc] init];
     [cryptor decryptSourceBinaryAt:temporaryEncryptedCopyPath
-                         intoPDFAt:temporaryPlainPDFPath
+                       intoPDFData:pdfData
                       withPassword:self.password
                         completion:^(NSError *error)
     {
@@ -107,8 +106,6 @@
         
         if (error)
         {
-            [fileManager removeItemAtPath:temporaryPlainPDFPath error:nil];
-            
             if (completion)
             {
                 completion(NO);
@@ -116,14 +113,13 @@
         }
         else
         {
-            self.temporaryPlainPDFPath = temporaryPlainPDFPath;
-            NSURL* temporaryPlainPDFURL = [NSURL fileURLWithPath:temporaryPlainPDFPath];
-            self.CGPDFDocument = CGPDFDocumentCreateWithURL((CFURLRef)temporaryPlainPDFURL);
+            CGDataProviderRef pdfDataProvider = CGDataProviderCreateWithCFData((__bridge  CFDataRef)pdfData);
+            self.CGPDFDocument = CGPDFDocumentCreateWithProvider(pdfDataProvider);
+            CGDataProviderRelease(pdfDataProvider);
+            
             if (!self.CGPDFDocument)
             {
                 DLog(@"Failed to create a CGPDFDocumentRef!");
-                self.temporaryPlainPDFPath = nil;
-                [fileManager removeItemAtPath:temporaryPlainPDFPath error:nil];
                 if (completion)
                 {
                     completion(NO);
@@ -148,10 +144,6 @@
     if (self.CGPDFDocument)
     {
         CGPDFDocumentRelease(self.CGPDFDocument), self.CGPDFDocument = NULL;
-    }
-    if (self.temporaryPlainPDFPath)
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:self.temporaryPlainPDFPath error:nil], self.temporaryPlainPDFPath = nil;
     }
     if (self.pages)
     {

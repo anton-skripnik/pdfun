@@ -32,13 +32,13 @@ extern NSString* const CCCryptorErrorDomain;
 //
 @interface Cryptor : NSObject
 
-- (void)encryptSourcePDFAt:(NSString *)sourcePDFPath
-              intoBinaryAt:(NSString *)destinationBinaryPath
-              withPassword:(NSString *)password
-                completion:(CryptorCompletionBlock)completion;
+- (void)encryptSourcePDFData:(NSData *)sourcePDFData
+                intoBinaryAt:(NSString *)destinationBinaryPath
+                withPassword:(NSString *)password
+                  completion:(CryptorCompletionBlock)completion;
 
 - (void)decryptSourceBinaryAt:(NSString *)sourceBinaryPath
-                    intoPDFAt:(NSString *)destinationPDFPath
+                  intoPDFData:(NSMutableData *)desinationPDFData
                  withPassword:(NSString *)password
                    completion:(CryptorCompletionBlock)completion;
 

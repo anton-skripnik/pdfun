@@ -17,7 +17,7 @@
 @interface PDFRenderManager : NSObject
 
 - (void)renderPage:(PDFPage *)page inContext:(CGContextRef)context size:(CGSize)size;
-- (void)renderDocument:(PDFDocument *)document saveToURL:(NSURL *)PDFURL;
+- (void)renderDocument:(PDFDocument *)document intoMutableData:(NSMutableData *)data;
 
 - (CGPoint)convertedPoint:(CGPoint)point intoCoordinateSystemOfPage:(PDFPage *)page fitIntoRect:(CGRect)boundingRect;
 

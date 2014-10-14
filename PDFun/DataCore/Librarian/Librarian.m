@@ -153,24 +153,21 @@ NSString* const LibrarianErrorDomain = @"LibrarianErrorDomain";
     
     NSFileManager* fileManager = [NSFileManager defaultManager];
     
-    NSString* renderedTemporaryPDFPath = [[TemporaryStorageManager sharedManager] pathForNamePrefix:newDocumentName ofType:[PlainPDFDocument extension]];
-    NSURL* renderedTemporaryPDFURL = [NSURL fileURLWithPath:renderedTemporaryPDFPath];
-    PDFRenderManager* renderer = [[PDFRenderManager alloc] init];
-    [renderer renderDocument:document saveToURL:renderedTemporaryPDFURL];
+    NSMutableData* pdfData = [NSMutableData data];
     
-    NSString* temporaryBinaryPath = [[renderedTemporaryPDFPath stringByDeletingPathExtension] stringByAppendingPathExtension:[EncryptedPDFDocument extension]];
+    PDFRenderManager* renderer = [[PDFRenderManager alloc] init];
+    [renderer renderDocument:document intoMutableData:pdfData];
+    
+    NSString* temporaryBinaryPath = [[TemporaryStorageManager sharedManager] pathForNamePrefix:newDocumentName ofType:[EncryptedPDFDocument extension]];
     
     Cryptor* __block cryptor = [[Cryptor alloc] init];
-    [cryptor encryptSourcePDFAt:renderedTemporaryPDFPath
-                   intoBinaryAt:temporaryBinaryPath
-                   withPassword:password
-                     completion:^(NSError *error)
+    [cryptor encryptSourcePDFData:pdfData
+                     intoBinaryAt:temporaryBinaryPath
+                     withPassword:password
+                       completion:^(NSError *error)
     {
-        [fileManager removeItemAtPath:renderedTemporaryPDFPath error:nil];
-        
         if (error)
         {
-            [fileManager removeItemAtPath:temporaryBinaryPath error:nil];
             if (completion)
             {
                 completion(error);

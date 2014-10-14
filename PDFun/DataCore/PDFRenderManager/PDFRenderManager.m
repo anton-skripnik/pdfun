@@ -82,9 +82,14 @@
     }];
 }
 
-- (void)renderDocument:(NSObject<PDFDocumentProtocol> *)document saveToURL:(NSURL *)PDFURL
+- (void)renderDocument:(NSObject<PDFDocumentProtocol> *)document intoMutableData:(NSMutableData *)data
 {
-    CGContextRef pdfContext = CGPDFContextCreateWithURL((CFURLRef)PDFURL, NULL, NULL);
+    NSASSERT_NOT_NIL(document);
+    NSASSERT_NOT_NIL(data);
+    
+    CGDataConsumerRef pdfDataConsumer = CGDataConsumerCreateWithCFData((__bridge CFMutableDataRef)data);
+    CGContextRef pdfContext = CGPDFContextCreate(pdfDataConsumer, NULL, NULL);
+//    CGContextRef pdfContext = CGPDFContextCreateWithURL((CFURLRef)PDFURL, NULL, NULL);
     [document.pages enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
     {
         NSASSERT_OF_CLASS(obj, PDFPage);
@@ -98,6 +103,7 @@
         CGPDFContextEndPage(pdfContext);
     }];
     CGContextRelease(pdfContext);
+    CGDataConsumerRelease(pdfDataConsumer);
 }
 
 - (CGPoint)convertedPoint:(CGPoint)point intoCoordinateSystemOfPage:(PDFPage *)page fitIntoRect:(CGRect)boundingRect
